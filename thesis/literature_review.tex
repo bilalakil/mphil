@@ -1,0 +1,281 @@
+\chapter{Literature Review}
+\label{LITERATURE_REVIEW}
+
+  The first section of this literature review searches for related work comparing the subject distributed computing systems, considering performance and other factors. The second examines usability studies which compared programming systems and were set in university class contexts, and the third attempts to find existing methodologies or other relevant information on multidimensional software comparisons.
+
+
+\section{System Comparisons}
+\label{SYSTEM_COMPARISONS}
+
+  There have been several comparison studies of distributed computing engines in the context of scientific applications before, which however typically focus on the performance and scalability of the systems, somewhat neglecting usability metrics. For example, \citeauthor{BERTONI:EVAL_CLOUD_FRAMEWORKS:2015} are comparing Apache Flink and Apache Spark with regard to genomics applications \cite{BERTONI:EVAL_CLOUD_FRAMEWORKS:2015}, but only report on differences in implementation techniques and runtime performance. Similar performance comparison studies of Spark and Flink with varying analytical workloads have been done by \citeauthor{MARCU:SPARK_VS_FLINK:2016} \cite{MARCU:SPARK_VS_FLINK:2016}, \citeauthor{PereraPH:CORR2016} \cite{PereraPH:CORR2016}, \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, and likely others.
+  
+  We will in fact be utilising experimental results from the last mentioned paper by \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015} to accommodate the performance component of our multidimensional comparison. This decision was made considering that this thesis involves performing a broad and comprehensive comparison of the systems -- not specific only to performance. Being a Master's candidature, and with effort needing to be devoted to the other aspects of the comparison and development of a methodology, we would not be able to perform as thorough and diligent a performance comparison as \citeauthor{VEIGA:EVALUATION:2015} have.
+  
+  We choose this research because it compares the same systems as ours, exercising the three systems against six tasks -- some characterised as CPU bound, one I/O bound, and three iterative algorithms -- on common big data benchmarks including as TeraSort, PageRank, and $k$-means. Careful attention was paid to the configuration of each system, and one section of the comparison was even devoted to the impact of parameter tuning. For the purpose of our research, we use their execution speed results in completing the six tasks, and also look at how the speed changes as the number of nodes used increases. The application of this paper's findings in our comparison can be found in Chapter~\ref{COMPARISON}.
+
+  It is clear that plentiful research is available in regards to the performance of these distributed computing engines. However, there were far fewer options when it came to multidimensional comparisons, and especially comparisons focusing on non-performance related comparisons like usability or practicality.
+
+  \begin{itemize}
+    \item \citeauthor{MEHTA:COMP_EVAL_BIGDATA_SYS:2017} present a study comparing five big data processing systems (Apache Spark; SciDB; Myria; Dask; and TensorFlow) with regard to their suitability and performance for scientific image analysis workflows \cite{MEHTA:COMP_EVAL_BIGDATA_SYS:2017}. This paper also gives a brief qualitative assessment of each system, considering the ease of use and overall implementation complexity, however based on measuring lines of code and observing issues experienced during implementation -- not quite capturing the usability of the systems.
+    \item \citeauthor{RICHTER:COMPARISON:2015} present a multidimensional comparison of Apache Hadoop MapReduce, Apache Storm and Spark via some of their higher level APIs, like MlLib for Spark, in the context of various distributed computing algorithms such as $k$-means and linear regression \cite{RICHTER:COMPARISON:2015}. The dimensions of the comparison include four performance or `capability' related metrics -- speed, fault tolerance, scalability and extensibility -- and also usability. However, the usability dimension appears to primarily be based on static analyses, for instance of the available interface features or programming language support, providing little information on the ease of use or human interaction aspect, and how the final scores were actually decided. This is yet another a good performance comparison, however lacking depth in the usability dimension.
+    \item \citeauthor{GALILEE:COMPARISON:2014} present a poster comparing Hadoop MapReduce, Spark and Flink on the grounds of performance, understandability, usability and practicality \cite{GALILEE:COMPARISON:2014}. It is refreshing to see a focus on these non-performance related factors, however considering the nature of the publication, there is lacking detail in how the scores were compiled, and concern over the subjectivity in having been performed all from a single researcher's perspective.
+  \end{itemize}
+
+  We can see that performance comparisons are plentiful, and that what we have found will be sufficient in accommodating the performance aspect of our multidimensional comparison -- specifically by using the data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015} which provides both the system coverage we require at a level of quality that consider reliable. Now we will shift focus to the important factors of usability and practicality, which was notably lacking in the above articles. Without this information available, potential users will find it difficult to accurately and efficiently judge the applicability of these systems to their use cases. This is especially a problem for users without a strong technical background, as they perhaps would not be able to compare and judge these factors themselves.
+
+
+\section{Usability Studies}
+
+  We found no usability studies comparing the exact set of distributed systems in this paper, or in fact any distributed systems at all. Thus we had to broaden our search in an attempt to learn what challenges laid ahead of us, and of any useful techniques that could improve the quality of our usability study. Particularly, we were looking for usability studies which compared two or more programming systems, and was set in a university class or course environment.
+  
+  The usability study by \citeauthor{NANZ:CONCURRENCY_STUDY:2013} \cite{NANZ:CONCURRENCY_STUDY:2013} compared concurrent programming languages, and while similar in how it subjected a university class to two different programming languages and compared the results, it had spanned only four hours and was set in a more controlled environment -- in that participants utilised self-study material under supervision, and continued to the measured exercise session later on the same day -- and thus would not face many of the challenges that our semester-long study would. With that being said, this research was excellently composed and executed, so despite it not being especially applicable to our situation as just described, it still contained helpful advice and techniques that we tried to implement in our study such to increase its reliability and reduce potential biases.
+  
+  The usability study by \citeauthor{HOCHSTEIN:CONCURRENCY_STUDY:2008} \cite{HOCHSTEIN:CONCURRENCY_STUDY:2008} compared the programming effort of two parallel programming models. While being roughly similar to the previous paper in terms of comparative nature and participant base, it had a time-frame of two weeks, which is notably closer to our intentions than the previous paper's four hours. However, this one heavily utilised instrumented compilers in producing its data, which in our case would be impractical considering time restraints and system complexity. It also was focused on comparing effort in the form of development time and correctness, which we felt would not be sufficient to describe and compare the broader usability of a system.
+  
+  In both of these studies, participants were grouped and only used one of the two compared systems, with data being compared across the groups. Our study differs in that participants would use each of the three systems and provide feedback on them all. This would present a series of challenges for us, such as dealing with potential first-used biases, which we unfortunately did not manage to find any guidance on via literature review.
+
+
+\section{Comparison Methodologies}
+
+  Our research aims to compare multiple systems, considering multiple dimensions, and faced the challenge of devising, collecting and portraying those results effectively. The display of the results must be suitable for audiences of differing technical ability. Before deciding to propose a comparison methodology that meets these requirements, we of course searched for any existing methodologies that could be used or learned from.
+
+  Interestingly, none were found. The search was continually broadened, from being for multidimensional comparisons of software or programming systems, to multidimensional comparisons in any context, to comparison methodologies in general, and yet nothing relevant could be found.
+
+  Comparisons do indeed need to be context appropriate in how they are performed and displayed, perhaps explaining the lack of a developed methodology. Particularly in regards to the display, there are many creative approaches that could be more suitable to given audiences, and so authors would likely do what seems best for them rather than using a standard methodology. For instance, it is common to see infographics used to display comparison results online -- to a non-technical audience -- but it is not always appropriate, and so would likely not be found in any particular methodology.
+  
+  With that being said, we still aim to apply a well-thought methodology to this thesis' comparison, and so have taken the step to propose one in Chapter~\ref{COMPARISON} considering the lack thereof. This methodology will be quite high-level or generalised, allowing it to guide researchers with different contexts or needs instead of only being useful in very similar circumstances to ours.
+
+
+
+\section{Interdisciplinary Usage}
+\label{INTERDISCIPLINARY_USAGE}
+
+  \begin{table}[ht]
+    \centering
+    \setlength\tabcolsep{3pt}
+
+    \caption{Google Scholar search results}
+    \label{GSR}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \scriptsize
+      \begin{tabular}{l | l l l l}
+        \toprule
+        \textbf{Query}                                          & \textbf{2015/06/22} & \textbf{2016/04/26} & \textbf{2016/09/15} & \textbf{2018/01/30} \\
+        \midrule
+        ``hadoop'' dna alignment OR assembly OR searching       & 1220\tnotex{GSR:A}  & 1520\tnotex{GSR:A}  & 1740\tnotex{GSR:A}  & 2690\tnotex{GSR:A}  \\
+        ``apache spark'' dna alignment OR assembly OR searching & 46\tnotex{GSR:A}    & 104\tnotex{GSR:A}   & 163\tnotex{GSR:A}   & 444\tnotex{GSR:A}   \\
+        ``apache storm'' dna alignment OR assembly OR searching & -\tnotex{GSR:B}     & 18                  & 33\tnotex{GSR:A}    & 68\tnotex{GSR:A}    \\
+        ``apache flink'' dna alignment OR assembly OR searching & 1                   & 9                   & 18\tnotex{GSR:A}    & 52\tnotex{GSR:A}    \\
+        ``apache hama'' dna alignment OR assembly OR searching  & -\tnotex{GSR:B}     & 6                   & 8                   & 10                  \\
+        ``apache apex'' dna alignment OR assembly OR searching  & -\tnotex{GSR:B}     & 0                   & 1                   & 2                   \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \item[a] \label{GSR:A} Result is approximate, indicated as ``About 46 results'' instead of ``46 results'' (for instance) on the search results page.
+        \item[b] \label{GSR:B} That particular query was not performed at that time.
+        \source \url{https://scholar.google.com/} -- The raw number of search results given a particular search query, with numbers collected at 2015/06/22, 2016/04/26, 2016/09/15 and 2018/01/30. Note that the query dates are not evenly separated.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  The hypothesis that led to us starting this research project was specific to the bioinformatics discipline -- that Apache Hadoop MapReduce remained the dominant distributed computing engine despite the recent development of more modern dataflow-oriented platforms such as Apache Spark or Apache Flink. We took some steps to validate this hypothesis on a larger scale by surveying the literature, however still within the context of bioinformatics.
+  
+  We believe that if the problem exists in the bioinformatics discipline, it would likely exist in other scientific disciplines where big data plays a similarly critical role, such as in astronomy, chemistry, and likely many other natural sciences. As these disciplines continue to collect significantly more data from significantly more numerous and powerful sensors, they face a similar challenge to bioinformatics, in that they grow increasingly reliant on distributed computing systems despite their practitioners often lacking the traditional computing background necessary to operate them without great difficulty.
+
+  The intention in this section is to give an overview and to highlight any trends that may be present in the usage of distributed data science platforms, rather than to provide a fine-grained measurement of the system usage in each individual disciplines, which would be a very difficult task. Considering this, we concentrated on one specific application area of data science, namely bioinformatics.
+
+  Our first attempt at gauging usage trends for each system, in the middle of 2015, was to compare the number of Google Scholar query results between each system, as portrayed in Table~\ref{GSR}. To this end, we issued several search queries to Google Scholar, each looking for the mentioning of a different data processing platform in the context of a research paper on DNA alignment, sequencing or searching. Indeed, this is not a precise measurement, as there would likely be many false-positives. However after cross-checking a sample of these papers (see below in Section \ref{SCRAPER}), we are positive that simply observing differences in the order of magnitude between the systems provides a good indication of an apparent trend. For instance, in the first measurement in June 2015 it was clear that Hadoop was almost the only compared system being compared at all, with Apache Spark only beginning to emerge with 3.77\% of Hadoop's occurrences.
+
+  It is interesting to see that trend change over time, as other systems begin to emerge. However, they all remain mostly negligible in comparison to Hadoop and Spark, as the number of articles for both continue to grow, with Spark amounting to 16.51\% of Hadoop's occurrences by the beginning of 2018 -- a substantial improvement from 3.77\%, and almost seven times more than any other compared system.
+
+  Thus this rough observation supports the hypothesis that Hadoop MapReduce remains the dominant choice, but by a shortening margin, with Spark particularly on the rise. The following subsections will attempt to provide more specific measurements to support this hypothesis.
+
+
+\subsection{Web Scraper}
+\label{SCRAPER}
+
+  \begin{table}[ht]
+    \centering
+    \setlength\tabcolsep{3pt}
+
+    \caption{BMC Bioinformatics system usage web scraper results}
+    \label{SR:BMC}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \scriptsize
+      \begin{tabular}{l l l l}
+        \toprule
+        \textbf{DOI} & \textbf{Keywords} & \textbf{Suitable?} & \textbf{Software} \\
+        \midrule
+        10.1186/s12859-016-1179-2 & ('fasta',) & YES & Vaadin (Java), R \\
+        10.1186/s12859-016-0904-1 & ('fastq', ' sam[ .,]') & YES & SparkSQL (mod.) \\
+        10.1186/s12859-015-0812-9 & ('fasta', 'fastq', 'genbank', ' sam[ .,]') & YES & SAS, Perl \\
+        10.1186/s12859-016-0915-y & ('fasta', 'fastq') & YES & Python2 \\
+        10.1186/s12859-016-1014-9 & ('fasta', 'fastq', ' sam[ .,]') & YES & Python2 \\
+        10.1186/s12859-015-0705-y & ('fasta', ' sam[ .,]') & YES & Python2 \\
+        10.1186/s12859-016-0967-z & ('fastq',) & YES & Perl, R \\
+        10.1186/s12859-015-0800-0 & ('fasta', 'fastq') & YES & Perl, R \\
+        10.1186/s12859-016-0969-x & ('fasta',) & YES & Perl \\
+        10.1186/s12859-016-1159-6 & ('fasta', 'fastq', 'genbank') & YES & MapReduce, C++, Ruby, ... \\
+        10.1186/s12859-015-0744-4 & ('genbank',) & YES & CUDA \\
+        10.1186/s12859-016-0887-y & ('fasta',) & YES & Celery, RabbitMQ, Django, ... \\
+        10.1186/s12859-016-1069-7 & ('fastq',) & YES & C++ \\
+        10.1186/s12859-015-0798-3 & ('fasta',) & YES & C, Java \\
+        10.1186/s12859-016-0930-z & ('fasta', 'fastq') & YES & C \\
+        10.1186/s12859-015-0736-4 & ('fastq', ' sam[ .,]') & YES & Unknown... \\
+        10.1186/s12859-016-0881-4 & ('fasta', 'fastq', ' sam[ .,]') & TRANSCRIPTOME & \\
+        10.1186/s12859-015-0698-6 & ('gcg',) & TRANSCRIPTOME & \\
+        10.1186/s12859-015-0826-3 & ('fasta',) & SMALLSCALE & \\
+        10.1186/s12859-016-1057-y & ('fasta',) & SMALLSCALE & \\
+        10.1186/s12859-015-0785-8 & ('fasta',) & SMALLSCALE & \\
+        10.1186/s12859-015-0711-0 & ('fasta',) & SMALLSCALE & \\
+        10.1186/s12859-016-1146-y & ('fasta',) & SMALLSCALE & \\
+        10.1186/s12859-015-0840-5 & ('fastq', 'genbank') & PIPELINE/PLATFORM & \\
+        10.1186/s12859-015-0795-6 & ('fasta', 'fastq') & PIPELINE/PLATFORM & \\
+        10.1186/s12859-016-1104-8 & ('fastq',) & PIPELINE/PLATFORM & \\
+        10.1186/s12859-016-0892-1 & ('fasta', 'fastq') & PIPELINE/PLATFORM & \\
+        10.1186/s12859-016-0879-y & ('fasta', 'fastq', ' sam[ .,]') & PIPELINE/PLATFORM & \\
+        10.1186/s12859-015-0837-0 & ('fasta',) & PIPELINE/PLATFORM & \\
+        10.1186/s12859-016-0966-0 & ('fasta', 'fastq') & PIPELINE/PLATFORM & \\
+        10.1186/s12859-015-0726-6 & ('genbank', ' sam[ .,]') & NOTSOFTWARE & \\
+        10.1186/s12859-015-0778-7 & ('fastq', ' sam[ .,]') & NOTSOFTWARE & \\
+        10.1186/s12859-016-1052-3 & ('fastq',) & NOTSOFTWARE & \\
+        10.1186/s12859-015-0709-7 & ('fasta', 'fastq') & NOTANALYSIS & \\
+        10.1186/s12859-016-1108-4 & ('fastq',) & NOMATCH & \\
+        10.1186/s12859-015-0827-2 & ('fasta',) & NOMATCH & \\
+        10.1186/s12859-015-0748-0 & ('fasta',) & NOMATCH & \\
+        10.1186/s12859-015-0747-1 & ('gcg',) & NOMATCH & \\
+        10.1186/s12859-015-0829-0 & ('fasta',) & NOMATCH & \\
+        10.1186/s12859-016-0976-y & ('gcg',) & NOMATCH & \\
+        10.1186/s12859-015-0742-6 & ('fastq', ' sam[ .,]') & NOMATCH & \\
+        10.1186/s12859-015-0811-x & (' embl',) & NOMATCH & \\
+        10.1186/s12859-015-0727-5 & ('fastq',) & NOMATCH & \\
+        10.1186/s12859-016-0958-0 & ('fasta', 'fastq') & NOMATCH & \\
+        10.1186/s12859-016-1061-2 & ('fastq',) & NOMATCH & \\
+        10.1186/s12859-016-0959-z & ('fasta',) & NOMATCH & \\
+        10.1186/s12859-016-1158-7 & ('fastq',) & MEDIP-SEQ & \\
+        10.1186/s12859-015-0797-4 & ('fasta', 'gcg') & CHIP-SEQ & \\
+        10.1186/s12859-016-1125-3 & ('fastq', ' sam[ .,]') & CHIP-SEQ & \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \source \url{https://bmcbioinformatics.biomedcentral.com/articles/sections/} - Our Python web scraper was executed on the ``Sequence analysis (applications)'' and ``Sequence analysis (methods)'' sections of BMC Bioinformatics' online list of articles, scraping all articles published in the one year period from 2015/09/01 to 2016/08/31. Only articles containing a match of the following regular expression were included: \texttt{fasta|fastq| embl|gcg|genbank| sam[ .,]}.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  \begin{table}[ht]
+    \centering
+    \setlength\tabcolsep{3pt}
+
+
+    \caption{IEEE BigData 2013--2015 bioinformatics system usage search results}
+    \label{SR:IEEE}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \scriptsize
+      \begin{tabular}{l l l l}
+        \toprule
+        \textbf{DOI} & \textbf{Keywords} & \textbf{Suitable?} & \textbf{Software} \\
+        \midrule
+        10.1109/BigData.2015.7364056 & ('genomics', 'bioinformatics') & YES & SPARQL, Urika-GD, Apache Jena Fuseki \\
+        10.1109/BigData.2015.7363756 & ('genomics', 'bioinformatics') & YES & Spark, SparkSQL, Flink \\
+        10.1109/BigData.2015.7363853 & ('genomics', 'bioinformatics') & YES & Spark, GraphX \\
+        10.1109/BigData.2015.7363750 & ('genomics', 'bioinformatics') & YES & MapReduce, Giraph \\
+        10.1109/BigData.2015.7363891 & ('genomics', 'bioinformatics') & YES & MapReduce \\
+        10.1109/BigData.2014.7004306 & ('genomics', 'bioinformatics') & YES & MapReduce \\
+        10.1109/BigData.2014.7004395 & ('genomics', 'bioinformatics') & YES & MapReduce \\
+        10.1109/BigData.2014.7004271 & ('genomics',) & YES & CUDA \\
+        10.1109/BigData.2014.7004291 & ('genomics', 'bioinformatics') & YES & Unknown... \\
+        10.1109/BigData.2014.7004389 & ('genomics', 'bioinformatics') & YES & Unknown... \\
+        10.1109/BigData.2013.6691642 & ('genomics', 'bioinformatics') & YES & MapReduce \\
+        10.1109/BigData.2013.6691694 & ('genomics', 'bioinformatics') & YES & MapReduce \\
+        10.1109/BigData.2015.7364129 & ('genomics',) & PIPELINE/PLATFORM & \\
+        10.1109/BigData.2014.7004485 & ('genomics', 'bioinformatics') & PIPELINE/PLATFORM & \\
+        10.1109/BigData.2013.6691638 & ('genomics', 'bioinformatics') & PIPELINE/PLATFORM & \\
+        10.1109/BigData.2013.6691723 & ('genomics', 'bioinformatics') & PIPELINE/PLATFORM & \\
+        10.1109/BigData.2015.7363806 & ('genomics', 'bioinformatics') & OTHER & \\
+        10.1109/BigData.2015.7363832 & ('genomics',) & OTHER & \\
+        10.1109/BigData.2015.7363841 & ('genomics',) & OTHER & \\
+        10.1109/BigData.2015.7363917 & ('genomics', 'bioinformatics') & OTHER & \\
+        10.1109/BigData.2015.7363784 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7363896 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7363981 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7364055 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7364064 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7364130 & ('bioinformatics',) & OTHER & \\
+        10.1109/BigData.2015.7364117 & ('genomics', 'bioinformatics') & NOTSOFTWARE & \\
+        10.1109/BigData.2014.7004392 & ('genomics', 'bioinformatics') & NOTSOFTWARE & \\
+        10.1109/BigData.2014.7004394 & ('genomics', 'bioinformatics') & NOTSOFTWARE & \\
+        10.1109/BigData.2014.7004385 & ('genomics', 'bioinformatics') & NOTANALYSIS & \\
+        10.1109/BigData.2013.6691572 & ('genomics', 'bioinformatics') & NOTANALYSIS & \\
+        10.1109/BigData.2014.7004213 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2014.7004301 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2014.7004341 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2014.7004387 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2014.7004391 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2014.7004396 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2013.6691757 & ('genomics', 'bioinformatics') & NOMATCH & \\
+        10.1109/BigData.2013.6691789 & ('genomics',) & NOMATCH & \\
+        10.1109/BigData.2013.6691734 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2013.6691751 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2013.6691755 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2013.6691783 & ('bioinformatics',) & NOMATCH & \\
+        10.1109/BigData.2015.7364124 & (‘genomics',) & MICROBIAL & \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \source Publications displayed from searching the terms ``genomics'' and ``bioinformatics'' (separately) from the IEEE Xplore listings for the IEEE BigData conferences run in 2013, 2014 and 2015.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  Our look at Google Scholar for trends yielded interesting numbers, however at that point we still had not seen first-hand an imbalance in actual research being performed -- we wanted to look at the actual papers being published to validate this hypothesis.
+  
+  To achieve this, we selected a major bioinformatics journal and examined a sample of its papers to see which systems were being used. Specifically, we wanted to look at DNA analysis articles, as that was the main bioinformatics topic which we, at the time, had the ability judge confidently for the survey's purpose. This approach does of course not consider many bioinformatics articles solving other problems, however DNA analysis is well known to be a big data problem -- which is perhaps not the case with other topics like microbial or transcriptome analysis. It also provided a well-defined scope for the sampling of the articles, as otherwise there would be far too many articles to handle if we tried to do them all.
+
+  We selected BMC Bioinformatics as it was a high quality, open access journal, and had a relatively straight forward web portal including the full content of the articles in HTML (not requiring a PDF download) -- an important trait as we were planning on implementing a web scraper to traverse its web pages and scrape relevant papers to be part of our survey. Although we have no intention of abusing their service, we were careful to also look at the journal's policies, where we found no clause mentioning restrictions on programmatic access or scraping of its articles.
+
+  The web scraper we implemented is a Python 3 script utilising standard HTTP modules to download the pages, and the \texttt{BeautifulSoup4} module for parsing them. While we provided a Docker container to promote reproducibility, the BMC Bioinformatics website itself is frequently updated, so it is unlikely that the script would work in future without adjustment. Considering this, we tried to make the parsing process easily adjustable, however only on a shallow level -- significant changes to the website's structure would understandably require more substantial changes to the parsing process. In application, it took about 30 minutes to adjust the scraper to function in 2018 compared to when it was first used in 2016. You can view or download the web scraper code from \url{https://www.github.com/bilalakil/mphil}.
+
+  The scraper performs a binary search through the online journal, looking for the first and last page with articles in the provided search range, and then proceeds through all pages in between collecting relevant articles' DOIs. It then accesses each article via their DOI and categorises it as a match if any provided regular expressions are matched within the article's contents (excluding attachments and the bibliography). Although the web scraper is single-threaded, it does not take too long to do its job, considering that it is more or less a one-off operation. If being expanded to a larger search, then multi-threaded execution would be a natural optimisation.
+
+  The inputs provided to the web scraper when working to validate our hypothesis were:
+
+  \begin{description}
+    \item[Date range] From 2015/09/01 to 2016/08/31 (inclusive).
+    \item[Sections] Which article sections (as visible at \url{https://bmcbioinformatics.biomedcentral.com/articles/sections/}) to search through. The provided parameters were ``Sequence analysis (applications)'' and ``Sequence analysis (methods)''.
+    \item[Keywords] Keywords, in the form of regular expressions, that articles must contain (at least one of) to be considered a match. The provided keywords were \texttt{fasta|fastq| embl|gcg|genbank| sam[ .,]} (in separate regular expressions). These keywords each refer to a popular DNA read file format, at least one of which would likely be used and mentioned in any paper detailing a process of performing DNA analysis.
+    \item[Article Types] The scraper could be made more efficient by skipping articles which did not match a provided type, however this ended up being unnecessary -- all article types were allowed. 
+  \end{description}
+
+  Note some the spaces in keyword regular expressions, such as \texttt{" embl"} and \texttt{" sam[ .,]"}. These were necessary to avoid matching in the middle common words, such as `sample' or `assemble'.
+  
+  The scraper outputs the DOIs of the matches along with which keywords were matched. From there we manually looked through each article to determine whether it was suitable, and if it was suitable, what software was being used, the result of which is visible in Table~\ref{SR:BMC}. Considering that we were particularly searching for DNA analysis articles involving big data processing, the values in the suitable column were derived as follows:
+
+  \begin{description}
+    \item[YES] Suitable -- none of the below points apply, and this article should be considered for the purpose of testing the hypothesis.
+    \item[NOMATCH] The keyword that was matched was not actually relevant to the research being performed. For instance: ``We created a new format for ..., as inspired by the FASTA format...''
+    \item[SMALLSCALE] The nature of the analysis was too small -- in terms of the data or processing involved -- to warrant usage of a distributed computing engine.
+    \item[PIPELINE/PLATFORM] The article discussed a platform or pipeline which would support the execution of existing DNA analysis and other bioinformatics tools, instead of a tool or process for analysing DNA itself. There were surprisingly many of these articles.
+    \item[MICROBIAL or TRANSCRIPTOME or MEDIP-SEQ or CHIP-SEQ] Other kinds of analyses were being performed, outside of our areas of expertise.
+    \item[NOTANALYSIS] The software itself does not analyse the DNA. For instance, it might be a specialised storage layer to improve the efficiency of downstream tools.
+    \item[NOTSOFTWARE] The article discusses DNA analysis algorithms or theory -- not presenting any new software or processes.
+    \item[OTHER] Not categorisable to any of the above, yet still not relevant. These articles were typically far beyond our areas of expertise (considering that we are not bioinformaticians).
+  \end{description}
+
+  The web scraper returned 49 articles which matched at least one of the provided keywords, of which 16 were deemed suitable. Of those 16, only three used any form of distributed computing -- the rest executing on a single machine. Of the three distributed solutions, one involved Apache Hadoop MapReduce, one involved Apache Spark, and the last involved Celery -- a distributed task queue.
+
+  Unfortunately, the dominance of non-distributed tools was too great in this set of articles from BMC Bioinformatics, and so we were not able to collect enough data to meaningfully validate or invalidate our hypothesis. This is an interesting result in itself however: the tools of choice for BMC Bioinformatic's authors appear to primarily be scripting languages. Perhaps we will see this change following further improvement in the usability and on-boarding processes in modern engines, as the performance gain trumps the lowering barrier to entry.
+
+  We then decided to examine the IEEE BigData conference, a conference that is not specific to bioinformatics, but undoubtedly includes more solutions utilising distributed computing engines -- hopefully providing us with enough data to challange or support our hypothesis. We filtered our search within the conference only to DNA analysis articles, for the same reasons as with BMC Bioinformatics.
+
+  After a quick look, we found that we could not apply the same keywords to the conference's articles, as practically no results were returned. This made sense considering that the conference was not targeted at bioinformaticians, so submissions would likely not contain such specific details in a shorter conference paper format. Instead, we applied the more general terms ``genomics'' and ``bioinformatics'', and this returned a manageable amount of results: 44 papers that we looked through in a similar manner to the BMC Bioinformatics paper for classification, whose results are shown in Table~\ref{SR:IEEE}.
+
+  Of the 44 relevant articles found in the three IEEE BigData conferences, 12 were deemed suitable. Of those 12, 6 involved Hadoop MapReduce, 1 involved Spark, and 1 involved both Apache Flink and Spark -- itself an evaluation of the two.
+
+  We found this result particularly interesting considering the venue -- the bleeding edge of big data. While we expected that to provide bias to newer systems, MapReduce remained the dominant choice in the DNA analysis papers found. Although not quite a substantial amount of supporting data, we felt it sufficed as a direct look at the research being performed to validate our hypothesis. 

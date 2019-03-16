@@ -1,0 +1,192 @@
+\chapter{Introduction}
+\label{INTRODUCTION}
+\pagenumbering{arabic}
+
+  Across many scientific disciplines, automated scientific experiments have facilitated the gathering of unprecedented volumes of data, well into the terabyte and petabyte scale \cite{HeyTT:2009}. Big data analytics is becoming an important tool in these disciplines, and consequently more and more non-computer scientists require access to scalable distributed computing platforms. However, distributed data processing is a difficult task requiring specialised knowledge.
+
+  Distributed computing platforms were created to abstract away distribution challenges. One of the most popular systems is Apache Hadoop which provides a distributed file system, resource negotiator, scalable programming environment named MapReduce, and other features to enable or simplify distributed computing \cite{HADOOP:HOMEPAGE,DeanG:MAPREDUCE:OSDI2004}. While a tremendous step in the right direction, effective use of this environment still requires familiarity with the functional programming paradigm and with a relatively low-level programming interface.
+ 
+  Following the success of Hadoop MapReduce, several newer systems were created introducing higher levels of abstraction. MapReduce addresses the main challenges of parallelising distributed computations -- including high scalability, built-in redundancy, and fail safety. Newer systems including Apache Flink \cite{FLINK:HOMEPAGE,CarboneKEMHT:DEBU2015} and Apache Spark \cite{SPARK:HOMEPAGE,ZahariaCFSS:HotCloud10} extend their focus to the needs of efficient distributed data processing: dataflow control (including support for iterative processing), efficient data caching, and declarative data processing operators.
+
+  Scientists have now a choice between several distributed computing platforms, and to guide their decision several comparison studies have been published recently \cite{BERTONI:EVAL_CLOUD_FRAMEWORKS:2015,MARCU:SPARK_VS_FLINK:2016,MEHTA:COMP_EVAL_BIGDATA_SYS:2017}. The focus of those studies was performance, which is perhaps not the primary problem for platforms built from the ground up with scalability in mind. More interesting is the question of the usability of those platforms, given that they will be used by non-computer scientists. Here we define usability as the ease of learning the concepts and usage of, and becoming proficient with a given system. But there are no reliable comparisons or large-scale usability studies so far.
+  
+  Furthermore, users would need to consider the practicality of the systems given their individual circumstances. For instance, is their existing cluster configuration supported by the system, and could they use a programming language for which they have already got a workflow and development environment setup? These real-world considerations are often left behind in system comparisons, but would be an important part of the decision making process for a potential user. The user may not have the know-how, or even permission, to enact changes on cluster configurations or install and configure new programming languages and environments.
+  
+  We have now described three factors that potential users tend to consider before deciding on a system to use: performance; usability; and practicality. While some may have the resources available to investigate these factors themselves, this will not be an option for many, who for the lack of other options, will instead resort to utilising software as described in previous research.
+  
+  This is often not a bad choice. However, it could sometimes lead to the usage of an inappropriate system, in turn increasing cost or reducing potential impact, for instance where a more appropriate system could have been used to run more experiments given the same amount of time and resources. In more extreme cases however, where too small a portion of research is conducted utilising modern or experimental technology in a particular discipline, it can be considered as slowing the technological progression of that discipline as a whole. As an example, we observed that when distributed computing is used in the bioinformatics discipline, MapReduce remains the dominant computational engine, which is strange considering both the performance and usability benefits of MapReduce's modern competitors -- see Chapter~\ref{SYSTEMS} Section~\ref{INTERDISCIPLINARY_USAGE} for this discussion. This could indeed be due to the repeated following of past practices, as the more modern options remain largely unexplored there.
+  
+  Thus we aim to provide a succinct, reliable multidimensional comparison of distributed computing engines that will help data scientists identify the system which would best suit their research, instead of potentially resorting to suboptimal tooling which could increase their effort and reduce their reward. The comparison must be suitable for viewers of differing technical backgrounds, as a data scientist or bioinformatician, for instance, would likely not be as familiar with the deeper concepts of distributed computing than a computer scientist would. And while all this will be useful in the present, the distributed computing space will continue to evolve, and these comparisons would need to be adjusted and repeated considering the major systems of the times, helping disciplines who utilise these tools to not fall behind -- which is similarly the case in contexts other distributed computing and data science, as the rapid development of technology is a somewhat universal challenge across both sciences and in the industry.
+  
+  To address these needs we propose a methodology for conceiving and displaying the results of multidimensional software comparisons, and employ it for the first time in this thesis. We present a comparison of Apache Hadoop MapReduce; Apache Spark; and Apache Flink, considering performance, usability and practicality, in a batch-oriented data analytics context. The performance component of the methodology will utilise an existing performance comparison (\citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}) between the three systems; the practicality component consists of various static analyses; and to complete the usability component we combine static analysis with the results of a large-scale usability study that we performed as part of this thesis.
+  
+  The usability study was conducted within a cloud computing course at The University of Sydney. The course was targeted at masters students from various backgrounds, including IT and data science. It is, to the best of our knowledge, the largest usability study of modern data processing platforms. Participants of the study had to implement three different data analysis tasks with use cases involving social media, immunology and genomics. The first task was implemented using MapReduce, while the last two tasks were implemented in a crossed A/B test with half the class first using Flink and the other half Spark.
+  
+  All in all, this thesis details the following contributions:
+  
+  \begin{description}
+    \item [Chapter~\ref{LITERATURE_REVIEW}] A literature review of related works considering existing comparisons, usability studies, and comparison methodologies, all in the context of distributed computing systems or software in general.
+    \item [Chapter~\ref{LITERATURE_REVIEW} Section~\ref{INTERDISCIPLINARY_USAGE}] A survey of the types of software developed for large-scale DNA analysis in recent research from the BMC Bioinformatics journal (as performed using a custom web scraper) and the IEEE BigData conference.
+  	\item [Chapter~\ref{USABILITY_STUDY}] Details on the design, execution, data analysis method and results of what is, to the best of our knowledge, the largest usability study of modern data processing platforms. We find that in-class usability studies are very effective and surprisingly underutilised (at least in the computer science space), and believe that our learnings in execution will prove useful in guiding others, thus discussing the successes and challenges met throughout our experience.
+    \item [Chapter~\ref{COMPARISON}] The initial proposal of a methodology to conceive and display the results of multidimensional system comparisons, and its first application -- comparing Apache Hadoop MapReduce, Apache Spark and Apache Flink, from the perspectives of performance, usability and practicality, in a batch-oriented data analytics context.
+  \end{description}
+
+  Further in this chapter, you will find:
+  
+  \begin{description}
+    \item [Section~\ref{STUDY_CONCEPTION}] The background of what led to this research, and its initial focus on bioinformatics.
+    \item [Chapter~\ref{SYSTEMS}] Descriptions of the architecture and usage patterns of the compared systems.
+  \end{description}
+  
+
+\section{Study Conception}
+\label{STUDY_CONCEPTION}
+
+  This research was originally focused on the bioinformatics discipline, where we heard from colleagues that new research was being conducted using Apache Hadoop MapReduce. With our knowledge of various modern distributed computing engines and the benefits they had, especially in terms of usability, we found it strange that Hadoop MapReduce was still being considered and used in new research.
+  
+  Looking further in to it, we got the impression that very little bioinformatics research was being conducted with MapReduce's modern descendants. Thus our initial project was to try and develop a better understanding of why this was the case (without going into the psychology or sociology of it), which involved exploring the strengths and weaknesses that the modern systems have in bioinformatics contexts. We found that the strengths did indeed outweigh the weaknesses, and so proceeded to investigate methods to increase awareness and adoption of these systems, with the goal of helping to lower their barriers to entry.
+  
+  Moving forward, we first performed a preliminary literature review and then a more thorough examination of recent bioinformatics research in an attempt to validate our intuition -- that the more modern systems were in fact being underutilised. The examination is presented in Chapter~\ref{SYSTEMS} Section~\ref{INTERDISCIPLINARY_USAGE} of this thesis, including details on the custom web scraper that was made to traverse, scrape and filter articles from the BMC Bioinformatics journal.
+  
+  Thus validated, we considered that a reliable, multidimensional system comparison in a bioinformatics context would serve as effective, and decided that this would become our goal. We then selected prominent distributed computing engines -- Apache Hadoop MapReduce; Apache Spark; and Apache Flink -- and worked to identify bioinformatics algorithms or tasks which both involve significant amounts of data, and present a variety of challenges in implementation or scalability. From that point we planned to implement each of the decided algorithms on each of the selected systems, thus providing the data for a comparison of the systems in terms of usability, performance, and the development experience as a whole.
+  
+  However before getting started with the implementations, we realised that there had to be more structure in the comparison and implementations such to reduce potential biases and increase the comparison's integrity. The first decision made was that instead of proceeding immediately to implementing an algorithm on each system, we should instead initially create a `blueprint implementation' for each task in an unrelated, non-distributed environment, such as plain Python, and then work on mapping that blueprint implementation to each of the individual systems. This would separate any difficulties in understanding and implementing the algorithm itself from struggles with the distributed computing systems.
+  
+  Secondly, some details for the comparison needed to be decided up front so we would know what to keep track of or look out for during the implementation process. It was this hurdle that led to the proposal of the methodology that will be discussed in Chapter~\ref{COMPARISON}. We realised the proposed methodology would need to be flexible enough to handle the different use cases and systems, and with a bigger picture in mind, also different comparison dimensions and audiences -- otherwise there would be little benefit in proposing a methodology at all.
+
+  Following completion of the first blueprint, where the use case was DNA short-read correction based on the Blue algorithm \cite{GREENFIELD:BLUE:2014}, we presented our project and an early draft of the methodology to The University of Sydney's Database Research Group, of which we were members of, and received important feedback which resulted in our research changing direction towards what it is now. The group emphasised that while the methodology is conceptually sound, the usability component of the comparison would suffer greatly from the subjectivity in having a single person (myself) implement the use cases across the systems -- especially considering that we are not members of the target audience.
+  
+  Instead they strongly suggested performing a usability study, and fortunately we had the opportunity to do so. Thus the direction of the research changed: with a cloud computing course starting in the coming months, we switched focus to attaining ethics approval and developing a usability study to be run as part of that class. The design, execution, data analysis method and results of the usability study are discussed in Chapter~\ref{USABILITY_STUDY}. Data from the usability study corresponded with the usability component of the comparison, alongside some additional static analyses. The performance component was covered using existing research between the systems, of which we found plenty to exist, and `static' research was performed to complete the practicality component by examining the characteristics of each system.
+  
+  
+\section{Systems}
+\label{SYSTEMS}
+
+  Apache Hadoop MapReduce \cite{DeanG:MAPREDUCE:OSDI2004} has long been the de facto standard for large-scale data analytics, being one of the earliest systems available to abstract the challenges of distributed computing and fault tolerance away from its users, significantly reducing the barrier to entry that was present in the big data space.
+
+  Its success led to the creation of systems which provided higher-level approaches to distributed computing. Apache Spark \cite{ZahariaCFSS:HotCloud10} and Apache Flink (formerly Stratosphere) \cite{CarboneKEMHT:DEBU2015} are two prominent examples of such systems. Spark and Flink are seen as common rivals, and have had much attention paid to their performance merits and pitfalls \cite{MARCU:SPARK_VS_FLINK:2016,PereraPH:CORR2016,VEIGA:EVALUATION:2015}. However, these comparisons focus primarily on the systems' performance, while this comparison is also to consider usability and practicality.
+
+  Due to their prominence and competitiveness, Spark and Flink will be the subject of this study's comparison. Hadoop MapReduce will also be part of the comparison, acting more as a control of sorts, allowing examination of the relative advantages or disadvantages of each newer system compared. We examined data from Google Scholar, the IEEE BigData Conference and the BMC Bioinformatics journal, in an attempt to confirm that MapReduce did indeed remain the dominant choice for distributed computing in bioinformatics and likely other scientific disciplines, as discussed in this chapter's interdisciplinary usage section. 
+
+  For the purpose of the usability study in Chapter~\ref{USABILITY_STUDY}, all three systems were run using Apache Hadoop YARN for resource management \cite{VAVILAPALLI:YARN:2013} and HDFS as the distributed file system \cite{SHVACHKO:HDFS:2010}. The following versions were used in the usability study: Apache Hadoop MapReduce v2.7.2; Apache Spark v2.1.1; Apache Flink v1.2.1. These were all the stable or highest non-beta versions at the time of the study's preparation.
+  
+  The three following sections will describe the background and architecture of each system, as well as a high-level description of their usage. Then Section~\ref{INTERDISCIPLINARY_USAGE} will discuss the apparent prevalence of each system in scientific disciplines like bioinformatics.
+
+
+\subsection{Apache Hadoop MapReduce}
+
+  This brief history of Apache Hadoop is paraphrased and summarised from an enjoyable article by \citeauthor{BONACI:HADOOP_HISTORY:2015} \cite{BONACI:HADOOP_HISTORY:2015}.
+  
+  Hadoop has a long history, having been given a name by Doug Cutting in 2006 but in development much earlier. Cutting was working with Mike Cafarella from the University of Washington with the aim of indexing the entire web, and also running Google's PageRank algorithm against it. Of course this proved an immense challenge in distribution and scalability -- hence the creation of Hadoop's HDFS, MapReduce, and then YARN and MapReduce 2. The former two were born with inspiration from Google publications including The Google File System \cite{ghemawat2003google} and MapReduce \cite{DeanG:MAPREDUCE:OSDI2004}.
+  
+  Following Hadoop's initial success at Google, Yahoo! took guidance from Cutting to get themselves on-board with Hadoop, which proved to be a great decision for the company. Later, newer web-scale companies like Twitter, Facebook and LinkedIn started using Hadoop and contribute to its open source codebase and tooling, thus continuing to grow the software's ecosystem. In 2008 Hadoop transitioned from a subproject of Apache Lucene to the top level Apache Hadoop where it still remains, now with many subprojects of its own.
+
+  A large part of its success was due to how it abstracted away many distributed computing challenges from its users, being one of the earliest systems to do so. HDFS was presented as a single reliable file system, when in fact it handled the tasks of monitoring for failures and rebalancing the distribution of blocks, while itself not imposing any restrictions on schema or structure. Its acceptance of failure promoted a shift from expensive, specialised hardware to commodity hardware: if your scale is large enough, there are inevitably going to be hardware failures, so why not expect them instead of treating them as an exception? MapReduce further solved the problems of parallelisation, distribution and fault tolerance in program execution. 
+
+  However, the original MapReduce had a flaw in the sense that it practically handled all responsibilities (other than the distributed file system), including scheduling, managing job execution, interfacing towards clients, and of course actually executing the provided code and managing the flow of data. As a growing number of specialised applications requiring different processing models demanded attention, newer distributed computing engines to support them had to either be build atop MapReduce itself, or face the challenge of reimplementing the surrounding tooling like scheduling and managing job execution. This was a problem because MapReduce's batch processing model is not suitable for all applications, being especially problematic for those requiring iterative execution like machine learning or graph processing.
+
+  Thus YARN (Yet Another Resource Negotiator) was born, separating the resource management, workflow management and fault-tolerance from MapReduce, and allowing other frameworks to be built atop it. MapReduce was modified to use YARN, becoming MapReduce 2.
+
+
+\subsubsection{Usage}
+
+  As the name suggests, Apache Hadoop MapReduce is executed in the Hadoop ecosystem, typically utilising YARN for cluster management \cite{VAVILAPALLI:YARN:2013} and HDFS as a distributed file system \cite{SHVACHKO:HDFS:2010}. Specifically, Hadoop MapReduce is a software framework which is managed by Hadoop YARN, a resource negotiator. HDFS is separate in the sense that it does not run on YARN, however the software is distributed as a part of the Hadoop ecosystem.
+  
+  MapReduce jobs usually utilise HDFS for input and output, often on the same nodes to minimise data transportation. MapReduce communicates with YARN for resource negoitation and scheduling, and monitors the running jobs in case it needs to request re-execution from YARN.
+  
+  The architecture of YARN and HDFS will not be described here, as they are shared between the comparison of the three distributed computing systems. You can learn more about YARN and HDFS from the Hadoop website \cite{HADOOP:HOMEPAGE}, which provides great descriptions of their architectures.
+
+  MapReduce facilitates the fault-tolerant, distributed execution of `jobs' or applications, which encompasses the following processing steps:
+  
+  \begin{enumerate}
+    \item Read input from HDFS blocks and split to mappers.
+    \item Map, applying a user-defined function (UDF) in a completely parallel manner.
+    \item If there is no reducer specified: output one file per mapper, typically to HDFS, and finish.
+    \item Optionally combine output from mappers using a UDF.
+    \item Partition, shuffle, sort and merge data into reducers. Default partition and sort behaviour can be overridden.
+    \item Reduce using a UDF, turning multiple values per key into a single value, also in a completely parallel manner (per key).
+    \item Output one file per reducer, typically to HDFS.
+  \end{enumerate}
+  
+  In MapReduce, the user provides a driver Java class which utilises the MapReduce package to configure, start and interact with jobs. It can access written data between jobs by reading their output, for instance from HDFS.
+  
+  Alternatively, in streaming mode, the driver is instead a set of shell commands, where scripts are specified to act as the mapper, combiner and reducer, each operating via standard input and output. This allows any method of programming available throughout the cluster to be used, and may present other contextual advantages or disadvantages \cite{DING:HADOOP_STREAMING:2013}. Chaining jobs would then become a matter of chaining shell commands.
+  
+  The mapper and reducer are classes or scripts that operate on key value pairs. A single mapper receives an iterator of key value pairs and can output zero or more key value pairs. A single reducer receives one key and an iterator of values -- or an iterator of key value pairs in sorted key order in Hadoop Streaming -- and can output zero or more key value pairs. A combiner is a reducer that is executed on each mapper following mapping but prior to data being shuffled over the network, primarily used to reduce communication overhead.
+  
+  Other distributed computing operations are implemented in terms of mapping and reducing. For instance, filter is usually performed in the map step, while joining and aggregation would be in one or both of the mapper and reducer, presenting different trade-offs \cite{BLANAS:MR_JOINS:2010}. Iteration can be implemented using a loop in the driver, and in that loop configuring and starting new jobs that use the previous completed jobs' output. Higher level systems have been created to improve support for or simplify iteration in MapReduce, such as Twister \cite{EKANAYAKE:TWISTER:2010}.
+
+
+\subsection{Apache Spark}
+
+  Spark was born in 2012 by the need for improvement for iteration and data mining algorithms, with its initial publication of Resilient Distributed Datasets (RDDs) which ``lets programmers perform in-memory computations on large clusters in a fault-tolerant manner'' \cite{ZAHARIA:RDD:2012}.
+
+  Soon after, \citeauthor{ZAHARIA:DSTREAM:2012} announced Discretized Streams, providing a ``high-level programming API, strong consistency, and efficient fault recovery'' to distributed stream computation, in the Spark environment. Thus Spark became one of the earliest high-level systems supporting both distributed batch and stream computation, as well as iterative querying.
+
+  Its high-level API was a breath of fresh air compared to the verbosity of Apache Hadoop MapReduce, and while initially available in Scala, its APIs soon became available in Java and Python, and later R.
+
+  Open source at its inception, the project was later donated to the Apache Foundation, whence it became the top level Apache Spark in 2014. By then the project already had a significant contributor and user base, which continued to grow to today's staggering levels -- considerably Hadoop MapReduce's top competitor, as explored in Section~\ref{INTERDISCIPLINARY_USAGE}.
+
+
+\subsubsection{Usage}
+  
+  \begin{lstlisting}[float=ht,
+                     language=Python,
+                     basicstyle=\ttfamily\footnotesize,
+                     label=SPARK_WORDCOUNT,
+                     caption={Apache Spark Python word count example as shown at: \url{https://spark.apache.org/examples.html}}]
+
+text_file = sc.textFile("hdfs://...")
+counts = text_file.flatMap(lambda line: line.split(" ")) \
+             .map(lambda word: (word, 1)) \
+             .reduceByKey(lambda a, b: a + b)
+counts.saveAsTextFile("hdfs://...")
+  \end{lstlisting}
+  
+  Apache Spark turns input data into RDDs, and then applies lazy transformations to them, creating new RDDs, where execution of said transformations do not occur until necessary for consumption by an `action' -- for instance for collection onto the driver or for storage into HDFS.
+
+  Spark has resource requests fulfilled by one of three resource managers: Spark Standalone; YARN; or Apache Mesos. Its core API features various generic transformations and actions, and additional APIs have been built atop the core API to provide higher-level support for various contexts. API libraries are provided for different programming languages, with the core API currently supporting Scala, Java, Python and R.
+  
+  The driver is any program which utilises the core API and optionally the other more specialised APIs. It creates RDDs from various input sources, including the local file system or HDFS, and applies lazy transformations and actions to those RDDs. The driver can also be an interpreter, which is often useful for exploration or debugging.
+  
+  Iteration can be performed similarly to Apache Hadoop MapReduce; using a loop in the driver. However, instead of configuring, starting and blocking on new jobs which write to and from HDFS, Spark would simply apply additional lazy transformations, collect them into a variable when necessary, and repeat.
+  
+  Spark predominantly performs in-memory computation in an attempt to minimise disk communication. This has the potential to provide speed improvements compared to MapReduce in many situations, including iteration, but can also degrade performance if memory is insufficient \cite{GU:MEM_OR_TIME:2013}. More effort is being dedicated to improving memory management to improve resiliency and performance \cite{MARCU:SPARK_VS_FLINK:2016}.
+  
+  The core API operates on either key value pairs or arbitrary objects. It includes transformations such as: \texttt{map}, \texttt{filter}, \texttt{reduceByKey}, \texttt{distinct}, \texttt{union}, \texttt{intersection}, \texttt{sortByKey}, \texttt{aggregateByKey}, \texttt{join}, and so forth. Actions include \texttt{saveAsTextFile}, \texttt{collect}, \texttt{count}, \texttt{countByKey}, \texttt{first}, \texttt{foreach}, \texttt{takeSample}, and so forth. Some transformations or operations can only operate on key value pairs -- not on arbitrary objects.
+  
+  With thanks to its high-level APIs, Apache Spark programs can end up looking quite simple, such as in the word count example in Listing~\ref{SPARK_WORDCOUNT}. However, in reality users will need to understand various system internals, such as when data is shuffled, to support the design of efficient and scalable programs.
+  
+  Fault tolerant, distributed stream processing is achieved in Apache Spark by using the Spark Streaming extension of the core API. It works by dividing or `micro-batching' live input data streams into a `discretized stream' or \texttt{DStream} \cite{ZAHARIA:DSTREAM:2012}, which is a sequence of RDDs that can be operated on by the core API and with additional streaming operations such as \texttt{window}. Other Spark API libraries, including MLlib and GraphX, also provide \texttt{DStream} support. Spark's method of micro-batching has been found to be slower, but more resilient to failure than native streaming in Apache Storm and Apache Flink \cite{LOPEZ:STREAM_COMPARISON:2016}.
+
+  Spark's core APIs have been revamped in more recent versions. Looking at the documentation for Spark v2.2.1 -- the stable version at the time of performing the comparison in Chapter~\ref{COMPARISON} -- we can see that usage of \texttt{DataSet} and \texttt{DataFrame} APIs are recommended for working with RDDs, or Spark SQL for relational data.
+  
+
+\subsection{Apache Flink}
+
+  In 2014, \citeauthor{ALEXANDROV:STRATOSPHERE:2014} presented Stratosphere \cite{ALEXANDROV:STRATOSPHERE:2014}, an ``open-source software stack for parallel data analysis'' which included a program optimiser, and at the time its own query language named Meteor, and much more. It claimed a major point of differentiation from competing systems was in its support for efficient incremental iteration. 
+
+  In one year's time the engine received a great amount of attention and development. While it maintained most of its architectural and conceptual features, much of its implementation changed, and even its name changed as it become the top level Apache Flink \cite{CarboneKEMHT:DEBU2015}.
+
+  For instance, the Meteor query language was no longer mentioned. Instead, Flink featured a \texttt{DataSet} API for batch processing, and a \texttt{DataStream} API for stream processing, which would both execute against a `common fabric' of streaming dataflows.
+
+  Thus was one of Flink's highlights: the unification of stream and batch processing. In fact, Flink treated a batch process as a special case of a stream process -- where the stream is finite. Furthermore, the project boasted a strong, wide set of features, supporting incremental asynchronous stream iterations, query optimisation, its own memory management to support spilling to disk in memory intensive applications, and more.
+
+
+\subsubsection{Usage}
+  
+  Apache Flink has changed much since its Stratosphere days. Thus, the information here is based on the Apache Flink v1.2 documentation found at \url{https://flink.apache.org}.
+  
+  Flink is natively a stream processor where batch processing is represented as a special case of steaming -- more specifically, bounded streaming with some adjustments to features such as fault tolerance and iteration. In Flink, users specify lazy streams and transformations which the engine then maps to a streaming dataflow using a cost-based optimiser. This dataflow is a directed acyclic graph (DAG) from sources to sinks, with transformation operators in between. Sinks trigger the execution of necessary lazy transformations.
+
+  The engine can be run in standalone, Hadoop YARN, or Apache Mesos cluster modes, similar to Apache Spark. It provides APIs with different levels of abstraction. The core \texttt{DataSet} (batch) and \texttt{DataStream} APIs are the most commonly used, with table and SQL APIs sitting at atop them. Other libraries are provided to directly support various specific contexts. Core API libraries are provided for Java and Scala, with the \texttt{DataSet} API additionally supporting Python.
+  
+  Similar to Apache Spark, the driver is any program which utilises the Flink APIs. It creates \texttt{DataSet}s or \texttt{DataStream}s from various input sources and applies lazy transformations to them, creating new \texttt{DataSet}s or \texttt{DataStream}s, until eventually directing them all various sinks.
+  
+  Iteration can be achieved either using a loop in the driver, or via the \texttt{IterativeStream} or \texttt{IterativeDataSet} classes. Using a loop is technically not iteration, but rather the driver continuously extending the DAG as necessary, which is limited in its scalability. The provided classes, on the other hand, can be thought to add a single node in the DAG which performs a set of transformations iteratively (given exit conditions), either using the last computed value or a solution set state that is modifiable in each iteration.
+  
+  Flink also primarily utilises in-memory computation to minimise disk communication. For robustness it implements its own memory management within the JVM, attempting to reduce garbage collection pressure, prevent out of memory errors by spilling to disk, and more. 
+  
+  The system does not operate on key value pairs, but requires `virtual' keys for some operators like grouping. Instead, it operates on arbitrary data types, and provides additional support for tuples and `plain old Java objects' (POJOs) by simplifying keying -- allowing specification of `virtual' keys as a tuple index or object property.
+  
+  Its core API supports a set of transformations that is largely similar to those in Spark's core API. As a result, Flink programs can also appear quite simple upon completion, but its users also will need to understand various system internals, such as when data is shuffled, to support the design of efficient and scalable programs.

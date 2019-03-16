@@ -1,0 +1,133 @@
+\documentclass[11pt,a4paper,british]{report}
+
+
+\usepackage[backend=biber,mincitenames=1,maxcitenames=1,maxbibnames=99]{biblatex}
+\bibliography{main}
+
+% For full inline citing as used in the Related Publications section
+% Thanks: https://tex.stackexchange.com/a/267089
+\newcommand{\printpublication}[1]{\AtNextCite{\defcounter{maxnames}{99}}\fullcite{#1}}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref} 
+\usepackage{listings}
+
+\usepackage{booktabs}
+\usepackage[style=Plaintop]{floatrow}
+\usepackage[referable]{threeparttablex}
+
+\usepackage{tkz-kiviat}
+\usetikzlibrary{arrows}
+
+\usepackage{setspace}
+\setstretch{1.3}
+
+
+
+\begin{document}
+
+
+
+\begin{titlepage}
+  \centering
+
+  {\LARGE
+    %Master's Thesis:\\
+    A Comparative Study of Hadoop MapReduce,\\
+    Apache Spark \& Apache Flink for Data Science
+  \par}
+
+  \vspace{2cm}
+
+  {\large
+    Bilal Akil\\
+    Supervised by: A/Prof. Uwe R\"ohm\\
+    ~\\
+    Faculty of Engineering and IT\\
+    School of Information Technology\\
+    The University of Sydney, Australia\\
+    {\tt bilal.akil@sydney.edu.au}
+  \par}
+
+  \vfill
+
+  {\large\it
+    A thesis submitted in fulfilment of the requirements\\
+    for the degree of Master of Philosophy
+  \par}
+
+  \vspace{2cm}
+
+  {\large March 2018 \par}
+\end{titlepage}
+
+
+\pagenumbering{roman}
+
+{
+
+  {\it
+    I'll take this opportunity to express my deepest gratitude to Joy, my family, and Uwe R{\"o}hm, for your support and faith in my ability to persevere through this candidature. Without such, I surely would not have made it.
+
+    Furthermore, I'd like to thank Uwe R{\"o}hm again, and Ying Zhou, Alan Fekete, and the school's Database Research Group, for the critical feedback and tutelage that kept this research on track and helped me to present at an international conference -- a feat I was doubtful of being able to achieve.
+    
+    I also acknowledge and appreciate the quality research of \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, whose performance comparison data was used to accommodate the performance dimension of this multidimensional comparison. This has been further acknowledged within the thesis text wherever their research has been utilised.
+  }
+
+  Ying Zhou provided great assistance in updating the cluster and software for the usability study, as well as the Flickr data, problems, and solutions for assignment~1.
+  
+  Uwe R{\"o}hm, the supervisor for my Master's candidature, developed new, and updated existing learning materials for the course, which were depended on by the usability study, and helped immensely through all stages of its execution.
+  
+  They both provided invaluable feedback and support as I devised the usability study and compiled its results, as well as in reviewing and editing my writing of the below publications.
+
+
+  \newpage
+  \subsection*{Related Publications}
+
+  The following publications arose from work related to this thesis, including some content from the introduction and conclusion, as well as from Chapters~2 and~3:
+  
+  \begin{itemize}
+    \item \printpublication{AKIL:USABILITY:2017}
+    \item \printpublication{AKIL:USABILITY_TR:2018}
+  \end{itemize}
+  
+
+  \subsection*{Statement of Originality}
+
+  This is to certify that to the best of my knowledge, the content of this thesis is my own work. This thesis has not been submitted for any degree or other purposes.
+
+  I certify that the intellectual content of this thesis is the product of my own work and that all the assistance received in preparing this thesis and sources have been acknowledged.
+
+  ~
+  
+  ~
+
+  Bilal Akil
+  
+
+  \subsection*{Human Ethics}
+
+  Ethics approval was attained prior to commencement of the usability study described in Chapter~3, from the University of Sydney's Human Research Ethics Committee under project number 2017/212. This application was supported by the university's Research Cluster for Human-centred Technology.
+
+}
+
+\newpage
+
+
+\include{abstract}
+
+
+\setcounter{page}{4}
+\tableofcontents
+
+
+\include{introduction}
+\include{literature_review}
+\include{usability_study}
+\include{comparison}
+\include{conclusion}
+\printbibliography[heading=bibintoc]
+
+
+\end{document}

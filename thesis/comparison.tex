@@ -1,0 +1,555 @@
+\chapter{Comparison and Methodology}
+\label{COMPARISON}
+
+  Performing a comparison of multiple technologies, considering multiple factors, and having to communicate the results to users of differing technical backgrounds, is a challenge. Consideration needs to be taken in reducing biases between technologies. The chosen factors need to be of interest to the target audience. The communication method needs to be suitable for readers who want to know the technical details of the comparison, but also for those who may not be able to understand that detail and need a more distilled presentation. There are plenty more needs to consider, and this is why some methodology or theoretical framework is necessary before engaging in a comparison.
+
+  However, we were unable to find any existing methodologies or frameworks to employ in our comparison, or even to apply principles or techniques from in the development of a new methodology. Thus we present an initial proposal of a multidimensional software comparison methodology to provide structure in considering all of these needs. The methodology provides guidance in the setup, execution and display of results for comparisons, in a way that is suitable for comparisons in different contexts, and intended for different audiences. In this sense it is not a very controlling or specific methodology, as that would largely restrict its applicability. Instead it seeks to guide the decision making process that occurs before commencing these comparisons, with the purpose of increasing comparison reliability and usefulness for the target audience.
+
+  The following section will describe the proposed methodology and justify its design. The results section following that will apply the proposed methodology in performing a multidimensional comparison of Apache Hadoop MapReduce, Apache Spark and Apache Flink, considering each system's performance, usability and practicality.
+
+
+\section{Methodology}
+
+  We will describe the methodology, as introduced at the beginning of the chapter, in two parts. First, we provide an outline of the methodology, setting it out as a series of steps and touching on its intended outcomes for the readers of resulting comparisons -- useful as a quick reference during usage. This will be followed by an explanation of the design of the methodology and our justification of each step.
+
+
+\subsection{Outline}
+
+  \begin{figure}[ht]
+      \begin{floatrow}
+          \ffigbox
+              {
+                  \caption{\textbf{(Example)} Kiviat diagram for a system \textcolor{orange}{Z}}
+                  \label{EX_KIV}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=orange,fill=orange,opacity=0.25](4.5,2,3.5)
+                  \end{tikzpicture}
+
+                  \textbf{(Example)} Larger measurements are better. See Table~\ref{EX_COMP_TBL} for more details.
+              }
+          \ffigbox
+              {
+                  \caption{\textbf{(Example)} Kiviat diagram comparing \textcolor{Green}{X}, \textcolor{blue}{Y} and \textcolor{orange}{Z}}
+                  \label{EX_KIV_OVERLAY}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=Green,fill=Green,opacity=0.25](3,3,2)
+                      \tkzKiviatLine[thick,color=blue,fill=blue,opacity=0.25](4.5,2,3.5)
+                      \tkzKiviatLine[thick,color=orange,fill=orange,opacity=0.25](2.5,5,4.5)
+                  \end{tikzpicture}
+
+                  \textbf{(Example)} Larger measurements are better. See Figures~A, B and C for individual plots, and Table~\ref{EX_COMP_TBL} for more details.
+              }
+      \end{floatrow}
+  \end{figure}
+
+  \begin{table}[ht]
+    \centering
+
+    \caption{\textbf{(Example)} Comparison measurements for systems \textcolor{Green}{X}, \textcolor{blue}{Y} and \textcolor{orange}{Z}}
+    \label{EX_COMP_TBL}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \begin{tabular}{l r | l l l}
+        \toprule
+                              & \textbf{Weight} & \textbf{\textcolor{Green}{System X}} & \textbf{\textcolor{blue}{System Y}} & \textbf{\textcolor{orange}{System Z}} \\
+        \midrule
+        \textbf{Performance}  &                 &                                      &                                     &                                       \\
+        Speed                 & 100\%           & \textbf{0.6}                         & \textbf{0.9}                        & \textbf{0.5}                          \\
+        \midrule
+        \textbf{Usability}    &                 & \textbf{0.6}                         & \textbf{0.4}                        & \textbf{1}                            \\
+        Community answers     & 10\%            & 0.4                                  & 1                                   & 1                                     \\ 
+        Complexity            & 30\%            & 0.8                                  & 0.2                                 & 1                                     \\ 
+        Documentation         & 20\%            & 1                                    & 0.5                                 & 1                                     \\ 
+        Examples              & 20\%            & 0.6                                  & 0.7                                 & 1                                     \\ 
+        \midrule
+        \textbf{Practicality} &                 & \textbf{0.4}                         & \textbf{0.7}                        & \textbf{0.9}                          \\
+        License type          & 40\%            & 1                                    & 1                                   & 1                                     \\ 
+        Shared environment    & 20\%            & 0                                    & 0.5                                 & 1                                     \\ 
+        Security settings     & 40\%            & 0                                    & 0.5                                 & 0.75                                  \\ 
+        \bottomrule
+      \end{tabular}
+      \begin{tablenotes}
+        \item \textbf{(Example)} Higher values are better. Weightings have been provided as sensible defaults. You can adjust them better consider your circumstances.
+        \source Direct the reader to the section of text which describes these measurements in detail, including how they were measured and normalised.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+  
+  This methodology guides the conception and display of results for multidimensional software comparisons. It requires the definition of an intended audience and context, as it emphasises the need to consider them throughout the design of the comparison and display of its results. The methodology aims to improve the structure and reliability of applied comparisons and their results.
+
+  \begin{enumerate}
+    \item Select a context and audience.
+    \begin{itemize}
+      \item For instance: a comparison of databases, with an audience of database researchers. This audience typically would be interested in different (more technical) considerations than an audience of, say, application developers.
+    \end{itemize}
+
+    \item Identify the key, high-level considerations for that context and audience.
+    \begin{itemize}
+      \item For instance: read throughput; write throughput; scalability; and fault tolerance.
+      \item A less technical audience, say an application developer, may have less specific considerations: performance (as a whole); usability (the ease of learning the concepts and usage of a system, and becoming proficient with it); and practicality (the ease of a system's adoption into existing clusters, development environments and workflows).
+    \end{itemize}
+
+    \item Break down the identified considerations into one or more weighted, objective, normalised (to range from 0 to 1) measurements that are important to the audience.
+    \begin{itemize}
+      \item Explain each measurement and why it's being measured as part of its higher-level consideration.
+      \item Explain the exact method of measurement and normalisation.
+      \item Decide on each measurement's weighting as a percentage of its consideration's overall value, and explain the decisions.
+    \end{itemize}
+
+    \item Do your best to identify potential biases for these measurements and take steps to avoid them. Then perform the measurements.
+
+    \item Present the results in three `tiers':
+    \begin{enumerate}
+      \item A set of Kiviat diagrams, also known as radar charts, comparing the values of the high-level considerations (cf. Figure~\ref{EX_KIV}), as a sum of their weighted measurements. Optionally, a combined Kiviat diagram overlaying each system (cf. Figure~\ref{EX_KIV_OVERLAY}) can \emph{additionally} -- not exclusively -- be presented. The combined Kiviat diagram should not be presented exclusively to avoid dependence on colour for interpretation, as this may not always be available to the reader.
+      \item A table breaking down each high-level consideration into their individual measurements and weightings (cf. Table~\ref{EX_COMP_TBL}).
+      \item A section of text describing each measurement in technical detail, including how their values were derived. The explanations from step 3 should be included here, as well as any details of steps taken to reduce potential biases.
+    \end{enumerate}
+  \end{enumerate}
+
+  \begin{itemize}
+    \item The intention here is that readers would start with the Kiviat diagrams for an overview, requiring less technical depth and understanding (relatively), but quickly covering what you identified to be their primary considerations.
+    \item For more information they can resort to the table, which breaks down the derived values into their individual measurements and weightings.
+    \item If unsure about any particular measurements or in search of more detail, they can resort to the full, technical descriptions provided.
+    \item Additionally, readers are free to adjust the provided weightings based on the importance of each measurement given the their individual circumstance.
+  \end{itemize}
+
+
+\subsection{Design and Justification}
+\label{DESIGN_AND_JUSTIFICATION}
+
+  We realised that when it came to the design of a comparison methodology, it would be easy to fall into a trap where the methodology is too specific, such that it would primarily be useful for our research and other very similar comparisons -- say of other distributed computing engines -- only. In that sense we would not really be proposing a methodology at all, but just developing one for usage in our current research.
+
+  However, we believe that while the situation described throughout this thesis -- data scientists lacking clear, reliable comparisons to support their selection of a distributed computing engine -- is indeed one which could benefit by these comparisons, there are undoubtedly many other contexts would be better off had it a stream of regular system comparisons. So, instead of focusing only on our context, we decided to try and provide guidance in the performance of multidimensional system comparisons to researchers looking to go down that path in other contexts too, as we experienced first-hand how little guidance already exists.
+
+  System comparisons tend to be very specific though. Distributed systems need to consider fault tolerance and scalability, for instance, while the concept does not exist in programming languages on their own. A comparison of image compression libraries would consider the file size of the output images as one of its key metrics. Video streaming analysis systems would need to consider not only throughput, but also result latency. The list goes on, and we are using it to illustrate the challenge in developing a methodology that can be useful in all these contexts.
+
+  It is for this reason that the methodology itself is rather high-level. It tries to guide the decision making process of the researchers who are conducting the comparison, such to help them avoid pitfalls that could damage the integrity of their comparison factors -- such as not empathising with the audience of the comparison (which we almost fell into ourselves) -- while still providing them the power necessary to tailor the comparison to the needs of their chosen systems and audiences.
+
+  With different contexts in mind, another major theme we thought the methodology must consider is the differing audiences, and their level of contextual understanding, that can and should be considered when performing a comparison. As described in Chapter~\ref{INTRODUCTION} Section~\ref{STUDY_CONCEPTION}, we started off with the intention of performing this multidimensional comparison for a bioinformatics context, but considered what we thought to be important in that comparison instead of the needs that bioinformaticians themselves would consider. Having a computer science background myself, and a supervisor with extensive knowledge in databases and distributed systems, one might think that our interpretation of what a distributed system comparison needs to consider may be more ``authoritative'', and that the bioinformaticians considerations are somehow ``wrong''. However, we do not believe this to be the case. Instead it is us who must empathise with the changing needs of different audiences. Perhaps one system is more ``cutting edge'' or technically impressive, and while that may excite researchers in a related field, it could be largely irrelevant to data scientists or bioinformaticians who are looking for systems that they could use, given their less specialised technical knowledge, to increase the potential of their domain specific algorithms.
+
+  Thus the two major themes coming into the design of this methodology were its applicability in a variety of technical contexts, and the consideration of a specific audience and their needs when performing a comparison. With this as a foundation, we attempt to explain and justify each step from the outline:
+
+  \begin{description}
+    \item[Step 1: Select a context and audience]
+      We place this at the forefront because it should be in the researcher's mind as they are making all of their decisions regarding the comparison. The comparison is for a specific context and audience, and if that is forgotten then the usefulness or applicability of the comparison is in danger.
+      
+      The context can be as specific or as general as the researcher thinks is useful for that audience. In our case, a general context such as ``distributed data analysis tasks'' is sufficient, but for more technical audiences that would likely be too vague.
+      
+      Application of the methodology should be repeated and reconsidered even just for different audiences, to ensure their differing needs are being met, but of course measurements can be reused if present in both.
+
+    \item[Step 2: Identify high-level considerations]
+      The high-level considerations will each be assigned a value that can be compared between systems. A good rule of thumb in deciding on these high-level considerations is: if you asked a member of your audience what they think is important given a certain circumstance, without going into significant detail, what would they say? For instance, if you asked an application developer what they thought was important in comparing database engines, they might say performance; ease of use; and whether or not it could connect to their given application stack off the shelf. On the other hand, if you asked a database researcher the same question, they would likely refer to more technical considerations such as read/write throughput; scalability; and fault tolerance. Try talking to members of your intended audience to find out what they consider to be important -- you may be surprised.
+      
+      We label these considerations ``high-level'' because they are often not clearly measurements in themselves -- like usability or performance -- but are still an important consideration for a given audience. Just as these are ideally some of the first things to come to the reader's mind when they think of comparing the systems, we want them to be the first result they see in the comparison, providing a quick and useful high-level view of each system.
+      
+      By keeping these considerations and their values seperate instead of providing one overall value for each system, readers can judge the importance of each consideration given their individual circumstance. For instance, one user may be willing to put in significantly more effort to attain maximum performance, and thus values performance more greatly than usability, whereas others may be the opposite. If the values were compressed into one then this judgement would be harder to make.
+
+    \item[Step 3: Break down considerations]
+      Considerations should be broken down into measurements that are clearly related, and include an explanation where that relation is not immediately obvious. 
+
+      They should also be as objective as possible. In our case, recognising that usability is an inherently subjective measure, we opted to perform a large-scale usability study and use an aggregated measurement of the participants' preferences.
+
+      The measurements must then be normalised from 0 to 1 by some measure. Discrete measurements can simply have values assigned -- for instance, open source means 1, free community edition means 0.5, proprietary means 0 -- but be sure to justify any employed normalisation strategy.
+
+      Finally, for considerations which have been broken down into multiple measurements, you must consider the weighting of each measurement. Note that this is simply a `default' weighting, as readers are encouraged to adjust the weightings to their individual circumstance, however it is important to provide sensible defaults considering that not all readers will do this. Again, you should provide justification for provided weightings.
+
+      This arrangement provides readers with traceability and understanding, where sought after, and additionally flexibility in that they can adjust the weightings as they require. By exposing the thought processes behind these measurements, it hopefully also serves to increase the integrity of the comparison. It is important to be clear and objective to avoid a common concern in comparisons: that they are performed with a goal of skewing its results towards a particular system. Readers that may be suspicious should be able to read and understand how your measurements are being performed in a manner that indeed does not have this problem.
+
+    \item[Step 4: Identify biases and perform measurements]
+      Some measurements may be susceptible to biases in the process of being measured, so it is important to consider these potential biases prior to commencing measurements. There is not much guidance that can be provided here as it is very specific to the individual measurements, but as an example we identified a potential marking bias in our usability measurement -- where biases in the marking process could skew analysis results -- and while we attempted to reduce this bias, we ultimately ended up removing assignment marks from the analysis to be careful. If we had not taken the time to think of it as a potential bias, then it indeed could have ended up skewing the analysis results.
+
+    \item[Step 5: Present the results in three tiers]
+      We introduce the concept of `tiers' in terms of displaying the comparison results with the goal of assisting the reader in both navigating the multiple dimensions of results, and comprehending them. Three tiers are employed here, which grow more complicated from the `top' tier to the `bottom' tier. Each tier should be clearly linked for readers who seek more information on particular parts of the comparison. Definitions of the three tiers follows.
+    
+      The bottom tier is the most verbose, intended to provide the full story on how the considerations and measurements were decided upon and executed in a reliable manner. It should be a section of text that is referenced by the other tiers. All explanations and justifications from the previous methodology steps should be included here, and enough technical detail should be provided to clarify any potential misunderstandings or misinterpretations of your comparison. This tier may not be suitable for readers with more a shallow technical understanding, but that is ok -- they will have access to the other two tiers and can request further assistance if required. It is suggested that this section includes a breakdown of all measurements, their definitions and method of normalisation.
+
+      Above this verbose textual tier, you should provide a table of measurements and their weightings, with Table~\ref{EX_COMP_TBL} acting as an example. The table's purpose is to quick provide a breakdown of the high-level considerations, for instance showing performance as a combination of throughput and scalability, and to separate the considerations' values into individual measurements and weightings. This provides slightly more technical detail than the high-level considerations, and should direct the reader to the section of text describing the measurements in full detail. It should also highlight that the weightings have been provided as `defaults', and recommend that the reader adjust them to their individual needs. This arrangement provides readers with a good level of flexibility without requiring significant technical knowledge or a large investment of time, but also the ability to dig in deeper if they require.
+      
+      Finally, at the top tier lies a visual overview of the systems comparison results, based on their high-level considerations. We suggest using Kiviat diagrams, also known as radar charts, as they can provide a clear and concise display of the multidimensional comparisons, with Figure~\ref{EX_KIV} as an example. The diagrams should refer to the table of measurements for further details.
+      
+      We recommend presenting the systems' diagrams in close proximity to support easy visual comparison. To this end, you could also present multiple systems in a single diagram, as shown in Figure~\ref{EX_KIV_OVERLAY}. However, it is important that this is not the only displayed chart as, if it is displayed depending on colour to separate each system, there may be accessibility issues for readers suffering from vision impairment. Thus, if you choose to include such a diagram with multiple systems overlayed and identified by colour, be sure to provide it in a complementary manner, referring to the individual diagrams which do not depend on colour, as we have done in Figure~\ref{EX_KIV_OVERLAY}.
+
+      Note that Kiviat diagrams require a minimum of three dimensions (or variables), so a different choice of visualisation would be necessary in two-dimensional comparisons -- perhaps a bar chart.
+  \end{description}
+
+  With all of this in place, readers would be able to easily navigate the multidimensional comparison, starting from a concise, high-level visual representation, with directions to focus on the details that are important to them and easily being able to dig deeper to learn more. Naturally, the level of technical understanding required will increase as they descend the tiers of detail. A simple mechanism is provided to give readers some flexibility in adjusting measurement weighting.
+
+  Researchers performing comparisons will have a structured approach to devising their comparison, and hopefully have the intended context and audience in mind throughout the decision making process. Yet, the methodology doesn't take away the flexibility researchers need to produce compelling comparisons in their specific contexts.
+
+
+\section{Result}
+
+  In this section we apply the methodology that was previously defined to the comparison of Apache Hadoop MapReduce, Apache Spark, and Apache Flink, in comparing their performance, usability, and practicality for data science. We present the application of the methodology in the series of steps as per its definition, however with the breakdown of individual measurements (step~3) and comparison results (step~5) combined into one -- because the full description of measurements needs to be included in the bottom tier of the comparison results, as per the definition in Subsection~\ref{DESIGN_AND_JUSTIFICATION}.
+
+  \subsection{Step 1: Context and audience}
+  \label{AUDIENCE}
+
+  The comparison will be evaluating the suitability of Apache Hadoop MapReduce; Apache Spark; and Apache Flink, in the context of general, large-scale, batch data science or data analysis tasks. It is important to remember that stream processing is not being compared here. We consider the audience to be data scientists or researchers from varying disciplines who need to perform such large-scale batch analyses, but are not equipped with a traditional computer science or distributed computing background.
+  
+  Often these users are not in direct control of their distributed computing or cluster environments, and may be forced to utilise whatever communication layers have been made available to them from their institution or organisation -- perhaps Hadoop YARN or Apache Mesos. If a system is not compatible with said communication layers, then it could be too costly (perhaps in time) for the organisation to update the cluster to support it, and thus the system may not be a practical choice for this user's work.
+
+  We observe that data scientists commonly have moderate to high experience with scripting or scientific programming languages such as Python or R, which are common tools in many scientific disciplines. While they may range from little or no to plenty of experience in distributed computing, they usually do not hold a deep understanding of the underlying concepts, because attaining a working knowledge of the systems is more often relevant to them than studying distributed computing principles.
+
+  While these descriptions of the audience are speculative in nature, they represent our understanding of the problems faced by data scientists based on our observations and interactions with members of such communities, which we want to be particularly mindful of. Of course not everybody will face the same challenges, however we are trying to highlight that these users usually will often not possess the technical ability, understanding or the power to make technical changes, of an individual with a computer science or distributed computing background, and that we will be considering this throughout the comparison.
+
+  \subsection{Step 2: High-level considerations}
+
+  \begin{description}
+    \item[Performance]
+      This is essential given the context of large-scale data science or data analysis. Poor performance may rule out the applicability of a system for especially demanding experiments, where being an order of magnitude slower than another system could take computation time from hours to days, or days to weeks. Great performance, on the other hand, reduces incurred costs by improving resource utilisation and efficiency (noting that we are comparing the systems on the same underlying hardware), and also is able to facilitate performing more experiments in less time, increasing the potential of the research.
+
+    \item[Usability] 
+      A computer scientist or distributed computing specialist can be especially focused on the technical advantages of one system over another, for instance prioritising higher scalability or cutting edge performance -- they are often not concerned about the difficulty to learn or use the system, as with a deeper understanding of the underlying concepts, learning in such topics is something they are accustomed to.
+
+      However, our audience of data scientists may struggle to learn and become proficient with more complex or verbose distributed computing engines -- it is a challenging topic, and a departure from their usual area of learning and research. While performance is undeniably important, this audience may be willing to sacrifice some of that in the interests of a system that they could learn to use more quickly, and thus work more effectively with.
+      
+      Systems with greater usability would support their users to focus more on their algorithms and analyses, rather than struggling to understand or implement a solution, or debug a problem. This difference may be worth significantly more to some users than, say, a 10\% performance boost on a less usable system. With that being said, we recognise that not all users have the same priorities, and the clear separation of usability and performance in this comparison will allow the individual reader to easily make a decision that suits their needs and preferences.
+
+    \item[Practicality]
+      Another problem we described our audience was likely to have was the limited control over their technical environment. They may not have the know-how, or even the permissions necessary to implement cluster or development environment changes, as may be necessary with different programming languages or cluster managers. This is why we consider practicality, which tries to capture the likelihood that a given dataflow engine will work without a requiring a user to change their development practices or environment.
+
+      For instance, in an institution or organisation which provides an Mesos cluster to its data scientists, a request to install an additional custom resource negotiator such to use a particular distributed computing engine may be refused, deeming the system `impractical' in this case, compared to one which happens to support Mesos out of the box. In a similar situation, an organisation may already have a wide range of useful modules installed across a cluster for the Python programming language, which its practitioners may have become accustomed to using. Being required to deviate from established workflows could be difficult for many users.
+  \end{description}
+  
+  These three high-level considerations are clearly separate, and provide what we believe to be a good coverage of potential measurements for comparison, in the sense that all the useful measurements we have been able to think of clearly fall beneath one of these three.
+
+  \subsection{Steps 3 \& 5: Breakdown and results}
+  \label{BREAKDOWN}
+
+  \begin{figure}[p]
+      \begin{floatrow}
+          \ffigbox
+              {
+                  \caption{Kiviat diagram comparing the high-level consideration values of \textcolor{blue}{Apache Hadoop MapReduce}, \textcolor{orange}{Apache Spark} and \textcolor{Green}{Apache Flink}}
+                  \label{COMP_KIV_OVERLAY}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=blue,fill=blue,opacity=0.25](2.258,0.875,3.75)
+                      \tkzKiviatLine[thick,color=Green,fill=Green,opacity=0.25](3.835,4.415,3.25)
+                      \tkzKiviatLine[thick,color=orange,fill=orange,opacity=0.25](3.818,4.67,3.5)
+                  \end{tikzpicture}
+
+                  Larger measurements are better. Performance measurements derived using data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}. See Figures~\ref{COMP_KIV_MR}, \ref{COMP_KIV_SPARK} and \ref{COMP_KIV_FLINK} for individual plots, and Table~\ref{COMP_TBL} for more details. If it looks like there are only two systems in the above diagram, that is because Apache Spark and Apache Flink are very close to overlapping in all considerations.
+              }
+          \ffigbox
+              {
+                  \caption{Kiviat diagram showing the high-level consideration values for \textcolor{blue}{Apache Hadoop MapReduce}}
+                  \label{COMP_KIV_MR}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=blue,fill=blue,opacity=0.25](2.258,0.875,3.75)
+                  \end{tikzpicture}
+
+                  Larger measurements are better. Performance measurement derived using data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}. See Table~\ref{COMP_TBL} for more details.
+              }
+      \end{floatrow}
+  \end{figure}
+
+  \begin{figure}[p]
+      \begin{floatrow}
+          \ffigbox
+              {
+                  \caption{Kiviat diagram showing the high-level consideration values for \textcolor{orange}{Apache Spark}}
+                  \label{COMP_KIV_SPARK}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=orange,fill=orange,opacity=0.25](3.818,4.67,3.5)
+                  \end{tikzpicture}
+
+                  Larger measurements are better. Performance measurement derived using data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}. See Table~\ref{COMP_TBL} for more details.
+              }
+          \ffigbox
+              {
+                  \caption{Kiviat diagram showing the high-level consideration values for \textcolor{Green}{Apache Flink}}
+                  \label{COMP_KIV_FLINK}
+              }
+              {
+                  \begin{tikzpicture}[scale=.5,rotate=30]
+                      \tkzKiviatDiagram[lattice=5]{Performance,Usability,Practicality}
+                      \tkzKiviatLine[thick,color=Green,fill=Green,opacity=0.25](3.835,4.415,3.25)
+                  \end{tikzpicture}
+
+                  Larger measurements are better. Performance measurement derived using data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}. See Table~\ref{COMP_TBL} for more details.
+              }
+      \end{floatrow}
+  \end{figure}
+
+  \begin{table}[p]
+    \centering
+
+    \caption{Comparison high-level considerations and their measurements for systems \textcolor{blue}{Apache Hadoop MapReduce}, \textcolor{orange}{Apache Spark} and \textcolor{Green}{Apache Flink}}
+    \label{COMP_TBL}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \footnotesize
+      \begin{tabular}{l r | l l l}
+        \toprule
+        & \textbf{Weight}
+        & \textbf{\textcolor{blue}{Apache Hadoop MapReduce}}
+        & \textbf{\textcolor{orange}{Apache Spark}}
+        & \textbf{\textcolor{Green}{Apache Flink}} \\
+        \midrule
+        \textbf{Performance}       &      & \textbf{0.451}  & \textbf{0.764}  & \textbf{0.767} \\
+        Speed                      & 50\% & 0.215           & 0.883           & 0.695          \\ 
+        Scalability                & 50\% & 0.688           & 0.644           & 0.838          \\ 
+        \midrule
+        \textbf{Usability}         &      & \textbf{0.175}  & \textbf{0.934}  & \textbf{0.883} \\
+        From usability study       & 70\% & 0.25            & 0.905           & 1              \\ 
+        REPL availability          & 10\% & 0               & 1               & 0.5            \\ 
+        Specialised APIs           & 20\% & 0               & 1               & 0.667          \\ 
+        \midrule
+        \textbf{Practicality}      &      & \textbf{0.75}   & \textbf{0.7}    & \textbf{0.65}  \\
+        Programming languages      & 50\% & 1               & 0.4             & 0.3            \\ 
+        Cluster/deployment options & 50\% & 0.5             & 1               & 1              \\ 
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \item Higher values are better. Weightings have been provided as sensible defaults. You can adjust them better consider your circumstances.
+        \source Performance values derived using data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}. Each of these measurements are elaborated under Subsection~\ref{BREAKDOWN}.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  \begin{table}[p]
+    \centering
+
+    \caption{Performance: Raw data}
+    \label{RAW_PERFORMANCE_DATA}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \scriptsize
+      \begin{tabular}{l r | l l l}
+        \toprule
+        && \multicolumn{3}{c}{Execution time (seconds)} \\
+        Task & Cluster size
+        & \textbf{\textcolor{blue}{Apache Hadoop MapReduce}}
+        & \textbf{\textcolor{orange}{Apache Spark}}
+        & \textbf{\textcolor{Green}{Apache Flink}} \\
+        \midrule
+        WordCount
+        & 13 & 483.21 & 136.25 & 326.68   \\
+        & 25 & 244.96 & 64.39  & 183.32   \\
+        & 37 & 171.54 & 58.86  & 138.24   \\
+        & 49 & 131.21 & 56.71  & 114.27   \\[1ex]
+        Grep                              
+        & 13 & 1737.32 & 32.39 & 45.18    \\
+        & 25 & 1671.03 & 35.86 & 41.89    \\
+        & 37 & 1139.02 & 36.96 & 45.38    \\
+        & 49 & 878.31  & 39.48 & 48.21    \\[1ex]
+        TeraSort                          
+		& 13 & 838.12 & 449.83 & 467.77   \\
+        & 25 & 339.07 & 139.35 & 186.06   \\
+        & 37 & 202.64 & 100.17 & 106.75   \\
+        & 49 & 119.53 & 85.70  & 76.68    \\[1ex]
+        Connected Components
+		& 13 & 1414.46 & 242.44 & 301.07  \\
+        & 25 & 1081.13 & 184.82 & 162.09  \\
+        & 37 & 855.96  & 135.64 & 138.68  \\
+        & 49 & 759.12  & 114.95 & 110.81  \\[1ex]
+		PageRank
+		& 13 & 1716.19 & 944.07 & 280.85  \\
+        & 25 & 1106.48 & 593.74 & 177.83  \\
+        & 37 & 905.71  & 398.71 & 134.68  \\
+        & 49 & 773.73  & 287.98 & 112.79  \\[1ex]
+		$k$-means
+		& 13 & 2501.97 & 309.50 & 1204.38 \\
+        & 25 & 1705.36 & 225.47 & 652.33  \\
+        & 37 & 1377.72 & 177.12 & 501.45  \\
+        & 49 & 1373.56 & 182.62 & 396.95  \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \source \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015} responded to our request for the numbers pertaining to Figure~1 in their performance comparison paper -- shown in this table.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  \begin{table}[p]
+    \centering
+
+    \caption{Performance: Task execution time comparison}
+    \label{COMP_SPEED_TBL}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \footnotesize
+      \begin{tabular}{l | r l r l r l}
+        \toprule
+        & \multicolumn{6}{c}{Execution time with 13 nodes (seconds), and normalised value\tnotex{COMP_SPEED_TBL:A}} \\
+        Task
+        & \multicolumn{2}{l}{\textbf{\textcolor{blue}{Apache Hadoop MapReduce}}}
+        & \multicolumn{2}{l}{\textbf{\textcolor{orange}{Apache Spark}}}
+        & \multicolumn{2}{l}{\textbf{\textcolor{Green}{Apache Flink}}} \\
+        \midrule
+        WordCount            & 483.21   & 0.28 & 136.25 & 1    & 326.68   & 0.42 \\ 
+        Grep                 & 1,737.32 & 0.02 & 32.39  & 1    & 45.18    & 0.72 \\ 
+        TeraSort             & 838.12   & 0.54 & 449.83 & 1    & 467.77   & 0.96 \\ 
+        Connected Components & 1,414.46 & 0.17 & 242.44 & 1    & 301.07   & 0.81 \\ 
+        PageRank             & 1,716.19 & 0.16 & 944.07 & 0.30 & 280.85   & 1    \\ 
+        $k$-means            & 2,501.97 & 0.12 & 309.50 & 1    & 1,204.38 & 0.26 \\[1ex]
+        \textbf{Average}     && \textbf{0.215} && \textbf{0.883} && \textbf{0.695} \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \item[a] \label{COMP_SPEED_TBL:A} Higher values are better. The normalised value is the lowest execution time across the task divided by the system's individual execution time for that task.
+    \source Execution speeds from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, as visible in Table~\ref{RAW_PERFORMANCE_DATA}. This measurement is elaborated in Subsection~\ref{BREAKDOWN} under ``Performance -- Speed''.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  \begin{table}[p]
+    \centering
+
+    \caption{Performance: Task execution scalability comparison}
+    \label{COMP_SCALABILITY_TBL}
+
+    \makebox[\textwidth]{\begin{threeparttable}
+      \footnotesize
+      \begin{tabular}{l | r l r l r l}
+        \toprule
+        & \multicolumn{6}{c}{Execution speedup from 13 to 49 nodes, and normalised value\tnotex{COMP_SCALABILITY_TBL:A}} \\
+        Task
+        & \multicolumn{2}{l}{\textbf{\textcolor{blue}{Apache Hadoop MapReduce}}}
+        & \multicolumn{2}{l}{\textbf{\textcolor{orange}{Apache Spark}}}
+        & \multicolumn{2}{l}{\textbf{\textcolor{Green}{Apache Flink}}} \\
+        \midrule
+        WordCount            & 268\% & 1    & 140\% & 0.52  & 186\% & 0.69  \\ 
+        Grep                 & 98\%  & 1    & -18\% & -0.18 & -6\%  & -0.06 \\ 
+        TeraSort             & 601\% & 1    & 425\% & 0.71  & 510\% & 0.85  \\ 
+        Connected Components & 86\%  & 0.50 & 111\% & 0.65  & 172\% & 1     \\ 
+        PageRank             & 122\% & 0.54 & 228\% & 1     & 149\% & 0.65  \\ 
+        $k$-means            & 82\%  & 0.40 & 69\%  & 0.34  & 203\% & 1     \\[1ex]
+        \textbf{Average}\tnotex{COMP_SCALABILITY_TBL:B} && \textbf{0.688} && \textbf{0.644} && \textbf{0.838} \\
+        \bottomrule
+      \end{tabular}
+      \normalsize
+      \begin{tablenotes}
+        \item[a] \label{COMP_SCALABILITY_TBL:A} Higher values are better. The normalised value is the system's individual speedup for the task divided by the maximum speedup across that task.
+        \item[b] \label{COMP_SCALABILITY_TBL:B} The Grep task was not included in calculating this average, as described in Subsection~\ref{BREAKDOWN} under ``Performance -- Scalability''.
+        \source Speedup derived using execution speeds from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, as visible in Table~\ref{RAW_PERFORMANCE_DATA}. This measurement is elaborated in Subsection~\ref{BREAKDOWN} under ``Performance -- Scalability''.
+      \end{tablenotes}
+    \end{threeparttable}}
+  \end{table}
+
+  An overview of the comparison results, quickly comparing the value for each consideration, is presented in Figure~\ref{COMP_KIV_OVERLAY}. An overview of the individual measurements and how they contribute to their considerations' values is presented in Table~\ref{COMP_TBL}.
+
+  What follows is the elaboration of each measurement, including how they were decided, measured and normalised.
+
+  The stable versions at the time of conducting measurement were: Apache Hadoop MapReduce v2.9.0; Apache Spark v2.2.1; Apache Flink v1.4.1. The performance measurements, which utilised external research, were performed with versions: Apache Hadoop MapReduce v2.7.2; Apache Spark v1.6.1; and Apache Flink v1.0.1. The usability study was performed with versions: Apache Hadoop MapReduce v2.7.2; Apache Spark v2.1.1; Apache Spark v1.2.1 -- the stable versions at the time.
+
+  \begin{description}
+    \item[Performance -- Speed (50\%)]
+      \textit{Summary (based on data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}):} How does the execution speed of each system, given a set of 6 tasks in a consistent environment, compare to the other systems? Apache Hadoop MapReduce: 0.215; Apache Spark: 0.883; Apache Flink: 0.695. Higher values represent lower execution times. The tasks included in the comparison are WordCount, Grep, TeraSort, Connected Components, PageRank and $k$-means -- the latter three of which are iterative algorithms. \medskip
+
+      \textit{Details:} During literature review we found a rich collection of research evaluating the performance of distributed computing engines. Considering this, we have decided to incorporate research by \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, which compares all three of the subject systems reliably. As discussed in Chapter~\ref{LITERATURE_REVIEW} Subsection~\ref{SYSTEM_COMPARISONS}, there is little benefit to be found in repeating similar studies over utilising this quality, existing evaluation. Please refer to that paper for full performance evaluation details, especially including Section~IV of the paper, where the hardware and software configuration used in the experiments is described -- different configurations would provide different comparison results.
+
+      For the purpose of measurement, we contacted the author of the paper requesting the data behind what had been presented in Figure~1 of the performance comparison -- as the figure did not show the exact numbers, only bars for comparison. The author kindly provided the data, which we display in Table~\ref{RAW_PERFORMANCE_DATA}.
+
+      For each of the six compared tasks, using the measurement at the lowest (13) node configuration, the system with the lowest execution time is assigned a value of 1, and the other systems' a value inversely proportional to that -- so a system that took double the time to complete the task would have a value of 0.5. This also serves to normalise the values. The final value used for this measurement is each of the systems' average across the six normalised values.
+
+      This approach is has been chosen considering that systems may be strong at certain tasks, but weak at others, so picking a single task for comparison is inappropriate. Taking the average of the tasks' values is approximate, as it may be the case that a particular user will value the performance of a given task more often than some other, however we cannot be sure of each reader's priorities and so will not attempt to provide weight to these tasks ourselves -- readers can apply individual weightings to the tasks if they know that a particular one is more important to them. Furthermore, the lowest (13) node configuration is examined as opposed to those with more machines in an attempt to minimise the effect of improved scalability and instead focus on more direct system performance. Scalability is covered in a separate measurement, immediately below.
+
+      Table~\ref{COMP_SPEED_TBL} presents the execution times for each task, and the average.
+
+    \item[Performance -- Scalability (50\%)]
+      \textit{Summary (based on data from \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}):} How does the speedup of each system compare, given a set of 5 tasks, as the size of the cluster increases from 13 nodes to 49 nodes? Apache Hadoop MapReduce: 0.688; Apache Spark: 0.644; Apache Flink: 0.838. Higher values represent greater speedups. The tasks included in the comparison are WordCount, TeraSort, Connected Components, PageRank and $k$-means -- the latter three of which are iterative algorithms. \medskip
+
+      \textit{Details:} During literature review we found a rich collection of research evaluating the performance of distributed computing engines. Considering this, we have decided to incorporate research by \citeauthor{VEIGA:EVALUATION:2015} \cite{VEIGA:EVALUATION:2015}, which compares all three of the subject systems reliably. As discussed in Chapter~\ref{LITERATURE_REVIEW} Subsection~\ref{SYSTEM_COMPARISONS}, there is little benefit to be found in repeating similar studies over utilising this quality, existing evaluation. Please refer to that paper for full performance evaluation details, especially including Section~IV of the paper, where the hardware and software configuration used in the experiments is described -- different configurations would provide different comparison results.
+      
+      We use the same dataset as in the speed comparison, Figure~1 in the performance comparison paper (presented in Table~\ref{RAW_PERFORMANCE_DATA} here), in performing this measurement, however this time looking at the speedup from the minimal 13 node cluster to the maximal 49 node cluster. This limits the applicability of our measurement to a context where cluster growth is from 13 to 49 nodes -- please bear this in mind, as the results may not be applicable if your situation involves the usage of substantially more nodes.
+
+      Specifically, for each system and each of the six compared tasks, the `speedup' is the execution time at the minimal 13 nodes divided by the execution time at the maximal 49 nodes, minus 1, displayed as a percentage. The final value for this measurement was intended to be the systems' average across all six tasks. However, the Grep task was completed very quickly by both Spark and Flink even at the smallest cluster size, resulting in a slowdown as the scale increased and additional overheads were imposed unnecessarily. We believe that in this particular case, the scalability of the systems is not accurately represented, and thus will exclude it -- the Grep task -- from the final calculation.
+
+      Table~\ref{COMP_SCALABILITY_TBL} presents the speedup for each task, and the average excluding Grep.
+
+    \item[Usability -- From usability study (70\%)]
+      \textit{Summary:} This value is based on how many participants from our usability study prefer to use a given system, considering the entire participant pool (rather than the Java-only pool from Chapter~\ref{USABILITY_STUDY} Subsection~\ref{LANGUAGE_INFLUENCE}). Apache Hadoop MapReduce: 0.25; Apache Spark: 0.905; Apache Flink: 1. Higher values represent a higher proportion of reported preferences.\medskip
+
+      \textit{Details:} The usability study performed and detailed in Chapter~\ref{USABILITY_STUDY} compared multiple usability factors between the subject systems -- primarily: reported system preference, System Usability Scale (SUS) values, and reported time spent. However, we decided this measurement would only consider reported system preference, for various reasons specific to this usability study's execution:
+
+      \begin{enumerate}
+        \item Our intention was to use the SUS score as a usability value, as that is the purpose of the survey. However, our usage of the SUS was experimental -- as described in Chapter~\ref{USABILITY_STUDY} Subsection~\ref{SUS} -- and, we believe, ultimately unsucessful. Specifically, the three systems turned out very similar in all measures related to the SUS, as explored in Chapter~\ref{USABILITY_STUDY} Subsections~\ref{PREF_SUS_SCORES} and~\ref{SUS_INDIV}. Technically, this could mean the three systems indeed are similar in usability, but we find this unlikely considering the very large difference in preference when looking at Apache Hadoop MapReduce, and also our personal experiences with the systems. Thus due to a lack of understanding, we choose not to rely on SUS data in this comparison.
+        \item Discluding the SUS, we were left with the reported system preferences and time spent working on the assignments. Unfortunately, a mishap in the collection of assignment~1 time spent data, as described in Chapter~\ref{USABILITY_STUDY} Subsection~\ref{EXEC_SURVEYS}, prevented us from being able to reliably compare the three systems' with that data. Although we may have come to the same decision to not use this data even if it had been appropriate, as the reported system preference could be considered more relevant.
+      \end{enumerate}
+
+      Thus, to utilise the performed large-scale usability study, we are left with reported system preferences as our means of comparison. Here we must decide which participant pool to consider: the full pool, or the Java-only pool. This decision is necessary considering the lack of Python support for Apache Flink in our usability study, as described in Chapter~\ref{USABILITY_STUDY} Section~\ref{EXECUTION}, which could have introduced biases to the experiment. The analyses in Chapter~\ref{USABILITY_STUDY} Subsection~\ref{LANGUAGE_INFLUENCE} found that all of our initial conclusions remained consistent in the Java-only pool, indicating that little bias was introduced. The only exception here was in the reported system preferences, which changed notably, and understandably -- Python users may have felt disappointed by the fact that they could use Apache Spark with Python, but not Flink, and this could have affected their reported preference. However, this would have had no effect on Java users.
+
+      Our audience for this comparison is data scientists, and in that sense it would be wrong to exclude Python users from the pool, as Python is a very common tool among data scientists and for general purpose data analytics. Including the Python users would mean that any of the aforementioned biases will be represented in the comparison results here. However, trying to exclude them could be considered inaccurate, as they were resultant of Flink's immature Python support at the time, as opposed to some error in the design or execution of the usability study. Thus, we will be considering the reported preference from the full pool of participants.
+
+      Therefore, a system's value is simply the percentage of participants who preferred that system, as reported in Chapter~\ref{USABILITY_STUDY} Subsection~\ref{PREF_SUS_SCORES}, divided by the percentage of the most preferred system for normalisation.
+
+    \item[Usability -- REPL availability (10\%)]
+      \textit{Summary:} This represents whether or not each system provides first-party REPL (Read-Eval-Print Loop) support. Apache Hadoop MapReduce: 0; Apache Spark: 1; Apache Flink: 0.5.\medskip
+
+      \textit{Details:} We believe being able to utilise a REPL environment is very useful when writing and debugging distributed programs. It assists in debugging and understanding the workings of a program, by being able to interactively inspect the data at its various steps through the distributed computation -- a graph of operations in Spark and Flink. It can help users become proficient with a system faster than had it not been available.
+
+      REPL availability is linked to whether the programming language itself includes a REPL, and whether or not a first-party connector has been provided, as it is non-trivial to connect the language's standard REPL environment to a cluster for the given system.
+      
+      Looking at Hadoop MapReduce, abitrary programming languages are supported via Hadoop Streaming, which utilises arbitrary executables, but this does not mean that there is REPL support. Hadoop's APIs are only available in Java which does not include REPL support, and we find no indication of any other first-party mechanism. Thus its value is 0.
+      
+      Spark and Flink provide APIs in Scala and Python (and R for Spark), all of which are languages with REPL support. Spark provides connectors for all three of these languages, giving it a value of 1 for this measurement. Flink provides a connector for Scala -- one of its two applicable languages, giving it a value of 0.5 for this measurement.
+
+    \item[Usability -- Specialised APIs (20\%)]
+      \textit{Summary:} How many first-party specialised API packages or libraries are provided for each system, compared to the other systems? Apache Hadoop MapReduce: 0; Apache Spark: 1; Apache Flink: 0.667.\medskip
+
+      \textit{Details:} Spark and Flink provide higher-level, specialised APIs for certain use cases, for instance including graph computation and machine learning. Such APIs are very useful for practitioners performing related work, reducing the need for low-level learning and often improving execution speed and performance with thanks to their specialised implementations. Note that here we are focused on batch computing, so streaming libraries will not be considered.
+
+      Working without such APIs can be difficult -- I for one am not sure how I would go about graph computation in Spark or Flink without using their higher-level APIs. This difficulty would be exaggerated for our audience, who likely have more limited technical ability compared to a distributed computing specialist or computer scientist.
+
+      MapReduce does not appear to have any such high-level APIs itself. Sometimes it is the foundation of higher-level systems or frameworks which may compile down to it, such as Apache Pig or Apache Hive, however we do not consider those in this measurement, as the user is not actually using MapReduce in these cases. In contrast, users can interchange between the standard \texttt{DataSet}, SQL, and the Gelly graph processing APIs easily, within the same Flink program. Considering this, MapReduce has a value of 0 for this measurement.
+
+      Interestingly, both Spark and Flink provide: a higher level SQL API to enable SQL-like querying over relational data, however still in beta in Flink; a machine learning library (MLlib for Spark and FlinkML for Flink); and a graph processing library (GraphX for Spark and Gelly for Flink). As the SQL API is still in beta for Flink, it will not be considered in this measurement. Thus Spark achieves a value of 1, and Flink a value one-third lower, considering that its beta SQL API is not being included: 0.667.
+
+    \item[Practicality -- Programming languages (50\%)]
+      \textit{Summary:} How many programming languages have first-party support in all of each systems' core APIs? Apache Hadoop MapReduce: 1; Apache Spark: 0.4; Apache Flink: 0.3.\medskip
+
+      \textit{Details:} This measurement is appropriate considering our definition of practicality, the ease of a system's adoption into existing clusters, development environments and workflows. This could be especially relevant to our audience, as described in Subsection~\ref{AUDIENCE}.
+
+      MapReduce includes a feature named Hadoop Streaming, which facilitates the usage of arbitrary executables to act as mappers, reducers and combiners. Through this mechanism, any programming language installed on the cluster can be used. Fine-tuning implementations by customising partitioners or comparators, for instance, must still be done via Java, however often the majority of work will be completed in the mapper, reducer and driver, and so Hadoop Streaming provides a great level of flexibility here. In that sense, its value for this measurement is 1, as it supports artbitrary programming languages.
+
+      Since MapReduce supports arbitrary languages, the values for the other systems cannot be relative to MapReduce. But then what should they be relative to? We can make an estimate that if 10 languages were supported, then it is very likely that there will exist at least one language in which a given user will be familiar with. Thus supporting 10 languages, for the purpose of assigning values for this measurement, is equivelant to supporting an arbitrary number of languages like MapReduce. Therefore each supported language adds 0.1 to the measurement's value, up to a maximum of 1. We realise that this is not quite a precise method of measurement, however it should suffice in providing an approximate value here, for the lack of a better techinque.
+
+      Spark's core batch processing APIs can be considered as the `classic' RDD API, as well as the `modernised' \texttt{DataFrame} and \texttt{DataSet} APIs. All of these APIs are supported in the Scala, Java, Python and R programming languages. Accordingly, Spark has a value of 0.4 for this measurement.
+
+      Flink's core batch processing API is the \texttt{DataSet} API, which provides support to the Scala, Java and Python programming languages, thus earning a value of 0.3 for this measurement. While feature parity across these three languages is not complete (which is not at all unexpected), it is quite significantly behind for Python. Although we experienced significant difficulty working with the Python API in Flink v1.2.1, we are unaware of its state now, in v1.4.1. Python users should especially consider performing some exercises with the system before deciding to commit to it.
+
+    \item[Practicality -- Cluster/deployment options (50\%)]
+      \textit{Summary:} How does the number of first-party supported cluster deployment options compare between each system? Apache Hadoop MapReduce: 0.5; Apache Spark: 1; Apache Flink: 1.\medskip
+
+      \textit{Details:} We consider this measurement as our audience will often not be in direct control of their cluster environment, perhaps having to request cluster changes from their institution or organisation, which could be a time-consuming or, in the worst case, fruitless undertaking. Thus a system that provides support for more cluster configurations has a higher chance of being practical for a given user.
+
+      We must consider the provider of a cluster deployment option for the purposes of this measurement: should we only consider clusters with first-party support, like how Spark itself provides Apache Mesos support (\texttt{new SparkConf().setMaster("mesos://HOST:5050")})? What about cases where the deployment target itself advertises support for the distributed computing engine, like how Mesos provides instructions on how to run MapReduce applications within (and not vice versa)? 
+
+      Firstly, it is impractical to check `all' cluster deployment options to see if they provide support to the compared systems. Furthermore, it may be risky to do so, considering that the methods they provide may have fallen out of date -- it is not the cluster's obligation to provide support to specific distributed computing engines, but rather to provide interfaces for arbitrary systems to connect to.
+
+      While it is also not the engine's obligation to provide support to the given clusters, it is more likely that if some cluster management software is being advertised in an engine's first-party documentation as a deployment option, that they will in fact maintain support for that -- bearing in mind that these are not experimental systems or deployment options; they are intended for usage in production environments. After all, cluster managers or resource negotiators like Mesos and YARN are purposefully `pluggable', in the sense that arbitrary systems can connect to it and request resources, whereas distributed computing engines are not.
+
+      Thus we will only consider cluster deployment options with first-party support.
+
+      How are standalone cluster configurations related to this measurement? Standalone deployment options make it significantly easier to use a system on one's local machine, perhaps for development or experimental purposes. On the other hand, they certainly will not be an existing cluster configuration that can be utilised without needing to directly modify or request modification to a user's cluster (unless the system is already being used), which means that these are not related to our definition of practicality. So we will not consider them in this measurement -- but note that all three of the compared systems are capable of executing locally, without a cluster manager installed. Spark and Flink also include standalone cluster managers which can be used instead of dedicated ones like Mesos or YARN.
+
+      With all this in mind, we observe that MapReduce only supports YARN, while Spark and Flink support both YARN and Mesos. Thus this measurement's value is 0.5 for MapReduce, and 1 for Spark and Flink.
+
+    \item[Practicality -- Software licensing (N/A)]
+      We considered this to be a measure of practicality as incompatible software licensing could be prohibitive under some circumstances. However all three of the subject systems are top-level Apache projects, and thus feature identical licensing models, making the measurement useless in this particular case.
+  \end{description}
+
+  Looking again at Figure~\ref{COMP_KIV_OVERLAY}, we can see that in comparison to Apache Spark and Apache Flink, Apache Hadoop MapReduce is quite far behind in both performance and especially usability, but similar on the grounds of practicality -- with its support for arbitrary programming languages compensating for its lack of Apache Mesos deployment support.
+  
+  The three high-level considerations for Spark and Flink reached very similar values. Spark's performance was slightly superior in terms of speed, but inferior in scalability (in the scope of scaling from 13 to 49 nodes) compared to Flink. We recommended that readers explore the individual measurements and adjust their weightings to more closely match your individual requirements and preferences, which map help to differentiate between the two systems. However, even after doing this they may end up similar, as we found that they both included many of the same features and characteristics.
+
+  We are very happy with the experience of using our proposed multidimensional comparison methodology. It provided a structured approach to devising, performing, and presenting the results of the comparison. Continued improvement of the methodology following further application in other contexts should see it grow to be an excellent tool in future software comparisons.

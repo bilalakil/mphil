@@ -1,0 +1,351 @@
+#!/usr/bin/env python3
+
+import sys
+import itertools
+import re
+from datetime import datetime
+from urllib.request import urlopen
+from bs4 import BeautifulSoup, SoupStrainer
+
+list_page_url = "https://bmcbioinformatics.biomedcentral.com/articles/sections/{0}?page={1}"
+
+# If this is found, then assume page navigation has reached its limit
+list_page_overflow_strainer = SoupStrainer(id="content-unavailable-msg")
+# Which element represents the list of articles?
+article_list_strainer = SoupStrainer(class_="c-teaser")
+# Which element contains text representing the type of an article?
+article_type_strainer = SoupStrainer(class_="c-teaser__type-label")
+
+def doi_from_article_listing(a):
+    return a.find(class_="c-teaser__title").a["data-track-label"]
+    
+def date_from_article_listing(a):
+    # Expected date string: "Published on: 20 June 2012".
+    return datetime.strptime(
+        a.find(class_="c-teaser__meta").get_text().split(":")[3].strip(),
+        "%d %B %Y"
+    )
+
+article_url = "https://bmcbioinformatics.biomedcentral.com/articles/{0}"
+article_strainer = SoupStrainer(class_="p-site-layout__main-content")
+article_references_strainer = SoupStrainer(id="Bib1")
+
+class Scraper:
+    def __init__(self,
+        sections, from_date, to_date,
+        article_types=[],
+        keywords=[],
+        verbose=False
+    ):
+        if from_date > to_date:
+            raise Exception("Invalid date range: `from_date > to_date`.")
+
+        self.from_date = from_date
+        self.to_date = to_date
+
+        self.article_types = [
+            (at, re.compile(at, re.IGNORECASE))
+            for at in article_types
+        ]
+        self.keywords = [
+            (kw, re.compile(kw, re.IGNORECASE))
+            for kw in keywords
+        ]
+
+        self._sections = sections
+        self._verbose = verbose
+
+    def debug(self, m="", verbosity=1):
+        if self._verbose >= verbosity:
+            sys.stdout.write(("LOG: " + m if m else "") + "\n")
+            sys.stdout.flush()
+
+    def download(self, url):
+        self.debug("Downloading: \"{0}\".".format(url), 4)
+        return urlopen(url).read()
+
+    def get_article_dois_and_keywords(self):
+        self.debug("Sections to be parsed: {0}".format(self._sections), 2)
+
+        res = set.union(*[
+            set(self._SectionScraper(self, section).get_article_dois_and_keywords())
+            for section in self._sections
+        ])
+
+        self.debug("All sections successfully crawled.")
+        self.debug()
+
+        return res
+        
+    class _SectionScraper:
+        def __init__(self, scraper, section):
+            self._scraper = crawler
+            self._section = section
+            self._section_url = list_page_url.format(section, "{0}")
+            self._articles_on_list_page = {}
+
+        def get_article_dois_and_keywords(self):
+            self._scraper.debug("Starting crawl for articles in section: \"{0}\"".format(self._section))
+
+            first = self._get_first_articles_page_number()
+            last = self._get_last_articles_page_number(first)
+
+            dois = self._get_all_article_dois_matching_date_and_type(first, last)
+            dois = self._get_dois_and_matching_keywords(dois)
+
+            self._scraper.debug("Concluding crawl for articles in section: \"{0}\"".format(self._section))
+            self._scraper.debug()
+
+            return dois
+
+        def _get_all_article_data_on_list_page(self, page):
+            if page not in self._articles_on_list_page:
+                self._scraper.debug("Pre-processing list page {0}.".format(page), 3)
+                html = self._scraper.download(self._section_url.format(page))
+
+                # Check if it's an overflow page.
+                if len(BeautifulSoup(html, "html.parser", parse_only=list_page_overflow_strainer)) != 0:
+                    self._articles_on_list_page[page] = None
+                else:
+                    # Otherwise find all software articles on the page.
+                    self._articles_on_list_page[page] = [
+                        # We're only interested in the article's date, and DOI.
+                        (doi_from_article_listing(a), date_from_article_listing(a), a) for a
+                        in BeautifulSoup(html, "html.parser").find_all(article_list_strainer)
+                    ]
+
+            return self._articles_on_list_page[page]
+
+        def _get_first_articles_page_number(self):
+            self._scraper.debug("Looking for first page!")
+
+            stepper = self._BinaryPageStepper()
+            prev_page = None
+            first_page = None
+
+            while prev_page != stepper.page:
+                page = stepper.page
+                prev_page = page
+
+                self._scraper.debug("Checking page {0} for first page.".format(page), 2)
+                articles = self._get_all_article_data_on_list_page(page)
+
+                if articles == None:
+                    self._scraper.debug("No articles found!", 3)
+                    stepper.back()
+                else:
+                    first_date = articles[0][1]
+                    last_date = articles[-1][1]
+
+                    self._scraper.debug("First article date: {0}. Last article date: {1}".format(first_date, last_date), 3)
+
+                    if first_date <= self._scraper.to_date:
+                        first_page = page
+                        stepper.back()
+                    elif first_date > self._scraper.to_date and last_date <= self._crawler.to_date:
+                        first_page = page
+                        break
+                    else:
+                        stepper.forward()
+
+            if first_page == None:
+                raise Exception("Could not find page within date range.")
+
+            self._scraper.debug("First page must be: {0}.".format(first_page), 2)
+            return first_page
+
+        def _get_last_articles_page_number(self, first_page=1):
+            self._scraper.debug("Looking for last page!")
+
+            stepper = self._BinaryPageStepper(first_page)
+            prev_page = None
+            last_page = stepper.page
+
+            while prev_page != stepper.page:
+                page = stepper.page
+                prev_page = page
+
+                self._scraper.debug("Checking page {0} for last page.".format(page), 2)
+                articles = self._get_all_article_data_on_list_page(page)
+
+                if articles == None:
+                    self._scraper.debug("No articles found!", 3)
+                    stepper.back()
+                else:
+                    first_date = articles[0][1]
+                    last_date = articles[-1][1]
+
+                    self._scraper.debug("First article date: {0}. Last article date: {1}".format(first_date, last_date), 3)
+
+                    if first_date >= self._scraper.from_date:
+                        last_page = page
+
+                        if last_date < self._scraper.from_date:
+                            break
+
+                        stepper.forward()
+                    else:
+                        stepper.back()
+
+            self._scraper.debug("Last page must be: {0}.".format(last_page), 2)
+            return last_page
+
+        def _get_all_article_dois_matching_date_and_type(self, first_page, last_page):
+            self._scraper.debug("Scanning list pages {0} to {1} for DOIs.".format(first_page, last_page))
+
+            dois = list(itertools.chain.from_iterable((
+                self._get_article_dois_matching_date_and_type(page) for page
+                in range(first_page, last_page + 1)
+            )))
+
+            self._scraper.debug("DOIs found prior to keyword searching:", 2)
+            self._scraper.debug(str(dois), 2)
+
+            return dois
+
+        def _get_article_dois_matching_date_and_type(self, page):
+            self._scraper.debug("Finding all DOIs with appropriate date and type on page {0}.".format(page), 2)
+
+            articles = self._get_all_article_data_on_list_page(page)
+            results = []
+
+            check_article_type = len(self._scraper.article_types) != 0
+
+            for a in articles:
+                if not (a[1] <= self._scraper.to_date and a[1] >= self._crawler.from_date): continue
+
+                if check_article_type:
+                    for at in self._scraper.article_types:
+                        if a[2].find(article_type_strainer).find(string=at[1]):
+                            results.append((a[0], a[1], at[0]))
+                else:
+                    results.append((a[0], a[1]))
+
+            self._scraper.debug("DOIs on page {0}:".format(page), 3)
+            self._scraper.debug(str(results), 3)
+
+            return [a[0] for a in results]
+
+        def _get_dois_and_matching_keywords(self, dois):
+            self._scraper.debug("Filtering DOIs to those matching desired keywords.")
+
+            matches = [
+                dm for dm
+                in [(doi, self._get_doi_keyword_matches(doi)) for doi in dois]
+                if dm[1] != False
+            ]
+
+            self._scraper.debug("DOIs with matching keywords:", 2)
+            self._scraper.debug(str(matches), 2)
+
+            return matches
+
+        def _get_doi_keyword_matches(self, doi):
+            self._scraper.debug("Checking keywords for DOI: \"{0}\".".format(doi), 2)
+
+            matches = []
+            soup = BeautifulSoup(self._scraper.download(article_url.format(doi)), "html.parser", parse_only=article_strainer)
+
+            # Remove the references section for speed and relatability.
+            soup.find(article_references_strainer).decompose()
+
+            for keyword, regex in self._scraper.keywords:
+                if soup.find(string=regex):
+                    matches.append(keyword)
+
+            self._scraper.debug("Matches: {0}".format(str(matches)), 3)
+                
+            return tuple(matches) if len(matches) != 0 else False
+
+        class _BinaryPageStepper:
+            def __init__(self, starting_page=1):
+                self.page = starting_page
+                self._increment = 1
+
+            def back(self):
+                self._increment //= 2
+                self.page -= self._increment
+
+                return self.page
+
+            def forward(self):
+                self._increment *= 2
+                self.page += self._increment
+
+                return self.page
+
+if __name__ == "__main__":
+    import argparse
+    import csv
+
+    def parse_args():
+        # Thanks [StackOverflow](http://stackoverflow.com/a/25470943/1406230)
+        # for custom/date argument parsing!
+        def parse_arg_date(s):
+            try:
+                return datetime.strptime(s, "%Y/%m/%d")
+            except ValueError:
+                msg = "Not a valid date: '{0}'.".format(s)
+                raise argparse.ArgumentTypeError(msg)
+
+        parser = argparse.ArgumentParser(
+            description="Scrape BMC Bioinformatics software papers (beneath the \"Sequence Analysis (Methods)\" section)  for keywords from one date to another."
+        )
+
+        parser.add_argument(
+            "from_date",
+            help="Date to start scraping, format: \"YYYY/MM/DD\".",
+            type=parse_arg_date
+        )
+        parser.add_argument(
+            "to_date",
+            help="Final date to consider for scraping, format: \"YYYY/MM/DD\".",
+            type=parse_arg_date
+        )
+
+        parser.add_argument(
+            "-s", "--section",
+            dest="sections",
+            help="The section slug component of the BMC Bioinformatics section URL (i.e. everything after \"/section\" and before \"?\"). Multiple supported.",
+            nargs="+",
+            type=str
+        )
+
+        parser.add_argument(
+            "-t", "--article-type",
+            dest="article_types",
+            help="A case insensitive string to be searched for. Multiple or none supported. An article's type must match one type (if any are supplied).",
+            nargs="*",
+            type=str,
+            default=[]
+        )
+
+        parser.add_argument(
+            "-k", "--keyword",
+            dest="keywords",
+            help="A case insensitive string to be searched for. Multiple or none supported. Article content must contain at least one keyword (if any are supplied).",
+            nargs="*",
+            type=str,
+            default=[]
+        )
+
+        parser.add_argument(
+            "-v", "--verbose",
+            help="Repeat this option for a higher verbosity.",
+            action="count",
+            default=0
+        )
+
+        return parser.parse_args()
+
+    args = parse_args()
+    scraper = Scraper(args.sections, args.from_date, args.to_date, args.article_types, args.keywords, verbose=args.verbose)
+    dois_and_keywords = scraper.get_article_dois_and_keywords()
+
+    with sys.stdout as f:
+        writer = csv.DictWriter(f, fieldnames=["DOI", "Keywords"])
+        writer.writeheader()
+        
+        for doi, keywords in dois_and_keywords:
+            writer.writerow({ "DOI": doi, "Keywords": keywords })
+
